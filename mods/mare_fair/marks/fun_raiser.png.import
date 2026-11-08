@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dco854cah2w3f"
-path="res://.godot/imported/fun_raiser.png-3de997b99dc893440648c467702426b0.ctex"
+uid="uid://bnjjwelyelk1h"
+path="res://.godot/imported/fun_raiser.png-5110fa17fde3452fc01a60ebdc7b8a09.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://mods/mare_fair/marks/fun_raiser.png"
-dest_files=["res://.godot/imported/fun_raiser.png-3de997b99dc893440648c467702426b0.ctex"]
+dest_files=["res://.godot/imported/fun_raiser.png-5110fa17fde3452fc01a60ebdc7b8a09.ctex"]
 
 [params]
 

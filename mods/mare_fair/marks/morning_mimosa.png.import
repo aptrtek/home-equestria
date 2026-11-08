@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfl4i3wa601js"
-path="res://.godot/imported/morning_mimosa.png-0d0baca049d2a2bb7b876620c993d470.ctex"
+uid="uid://ber1i65ct3fjw"
+path="res://.godot/imported/morning_mimosa.png-85293039142a851f853ad74b91539ef7.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://mods/mare_fair/marks/morning_mimosa.png"
-dest_files=["res://.godot/imported/morning_mimosa.png-0d0baca049d2a2bb7b876620c993d470.ctex"]
+dest_files=["res://.godot/imported/morning_mimosa.png-85293039142a851f853ad74b91539ef7.ctex"]
 
 [params]
 

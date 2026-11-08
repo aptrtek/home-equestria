@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dsb5pm8vuem5h"
-path="res://.godot/imported/fair_flyer.png-a761af4832e9ca998ba5fcc77dd6c508.ctex"
+uid="uid://8n21emufrex1"
+path="res://.godot/imported/fair_flyer.png-620b81d2c1baf97a9c137d57c4e39b9a.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://mods/mare_fair/marks/fair_flyer.png"
-dest_files=["res://.godot/imported/fair_flyer.png-a761af4832e9ca998ba5fcc77dd6c508.ctex"]
+dest_files=["res://.godot/imported/fair_flyer.png-620b81d2c1baf97a9c137d57c4e39b9a.ctex"]
 
 [params]
 
