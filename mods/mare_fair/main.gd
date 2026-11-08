@@ -3,7 +3,6 @@ extends Node
 ## existing save the first time. A fresh world already has them from the merged roster.
 
 const BALLOON := preload("res://mods/mare_fair/balloon.gd")
-const RECOLOR := preload("res://mods/mare_fair/mane_recolor.gd")
 const PONY := "res://world/characters/background/background_pony.gd"
 const GLASSES := "res://world/characters/background/accessories/vinyl_glasses.scn"
 const IDS: Array[String] = ["fair_flyer", "soiree", "matinee", "morning_mimosa", "fun_raiser"]
@@ -31,7 +30,6 @@ func _dress(pony: Node) -> void:
 	var id := str(who.call("character"))
 	if id not in IDS: return
 	var model: Variant = pony.get("_model")
-	if model is Node: RECOLOR.apply(pony, model)
 	if id in GLASSED: _glasses(pony)
 	_dressed[pony] = model
 
