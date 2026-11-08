@@ -1,7 +1,10 @@
 extends RefCounted
 ## The Mare Fair mascots (https://marefair.org/mascots/).
-## Cutie marks are the public vectors from the 2025 site icon set, rendered to PNG.
-## Hair, clothes and the balloon are still stand-ins. The balloon reference PNG is not shipped.
+## Cutie marks are the public vectors from the 2025 site icon set, rendered to PNG
+## and stored transposed, the way every other flank sheet in this game is stored.
+## Manes and tails are original shells on the game's hair bones, shaped after the
+## public portraits and the 2025 idle clips. Clothes, glasses and the balloon
+## are still stand-ins. The reference pictures are not shipped.
 
 const IDS: Array[String] = ["fair_flyer", "soiree", "matinee", "morning_mimosa", "fun_raiser"]
 
@@ -12,9 +15,9 @@ const BALLOON := "Parked on Balloon Hill, apart from Twilight's flyable balloon.
 
 ## What a player should be told is unfinished, keyed by identity id.
 const NOTES := {
-	"fair_flyer": "Pegasus, from the official portrait (wings; the written bio says she soars and does not name the race). Coat is the blue-grey body colour. The purple belly and legs, blonde-and-pink mane tips, blue headband and sunflower hat are not on the model. Hair is Lily Valley's mesh, recolored blonde. Cutie mark is the official vector: an orange star in a blue ring, with orange and blue dots on a pale wheel.",
-	"soiree": "Earth pony, from her bio. Coat pale yellow, mane cyan, eyes magenta. Hair is Bon Bon's mesh, recolored; the short swept style and any curls are not hers. Cutie mark is the official vector: a white frowning theatre mask beside a yellow crescent.",
-	"matinee": "Pegasus, from her bio. Coat pale yellow, mane light blue, eyes magenta. The purple streak and purple tail on the portrait are one recolor, so they are not separate. Hair is Cloudchaser's mesh. Cutie mark is the official vector: a yellow sunburst behind a white smiling theatre mask.",
-	"morning_mimosa": "Earth pony, from her bio. Coat peach, mane the flat green of the portrait, eyes gold. The orange-slice hair clip, leafy tail ties and gold bangles are not on the model. Hair is Golden Harvest's mesh, recolored green. Glasses, when the Vinyl Scratch glasses file is installed with the source data, are that mesh and not her round frames. Cutie mark is the official vector: a champagne flute with an orange slice on the rim.",
-	"fun_raiser": "Unicorn, from the official portrait (horn and pale green coat). The written bio does not name her race. Mane orange, eyes green. The high ponytail, white jacket and pendant are not on the model. Hair is Spitfire's swept mesh, recolored orange, which is not a ponytail. Glasses use Vinyl Scratch's frames when that file is installed. Cutie mark is the official vector: a grey hotel beside a palm.",
+	"fair_flyer": "Pegasus, from the official portrait (wings; the written bio says she soars and does not name the race). Coat is the blue-grey body colour. Mane is a long blonde lock with a blue headband and a dusky tip; tail is the big wavy blonde one. The sunflower hat and the purple belly are not on the model. Cutie mark is the official vector: an orange star in a blue ring, with orange and blue dots on a pale wheel.",
+	"soiree": "Earth pony, from her bio. Coat pale yellow, eyes magenta. Mane is a solid swept cyan cap whose falls run down the neck and curl at the chest; tail is a short cyan crescent on the rump. Cutie mark is the official vector: a white frowning theatre mask beside a yellow crescent.",
+	"matinee": "Pegasus, from her bio. Coat pale yellow, eyes magenta. Mane is the full light-blue bob with a purple streak; the tail ends in that same purple. Cutie mark is the official vector: a yellow sunburst behind a white smiling theatre mask.",
+	"morning_mimosa": "Earth pony, from her bio. Coat peach, eyes gold. Mane is the green one with the cowlick and an orange slice by the ear; tail is the green braid with an orange tie. The round spiral glasses, leafy ties and gold bangles are not on the model. Glasses, when the Vinyl Scratch glasses file is installed with the source data, are that mesh. Cutie mark is the official vector: a champagne flute with an orange slice on the rim.",
+	"fun_raiser": "Unicorn, from the official portrait (horn and pale green coat). The written bio does not name her race. Eyes green. Mane is the orange high ponytail with a green band, a pale streak and a curled side lock; tail is the thick curled orange one with a pale streak. The white jacket and pendant are not on the model. Glasses use Vinyl Scratch's frames when that file is installed, which are not her round pair. Cutie mark is the official vector: a grey hotel beside a palm.",
 }

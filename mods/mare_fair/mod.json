@@ -3,7 +3,7 @@
 	"name": "Mare Fair",
 	"version": "1.0.0",
 	"author": "Anon",
-	"description": "The Mare Fair mascots visit Ponyville and gather at their parked balloon on Balloon Hill. Colours and bios follow the public convention pages. Hair, marks and the balloon are original stand-ins, not official art.",
+	"description": "The Mare Fair mascots visit Ponyville and gather at their parked balloon on Balloon Hill. Colours, bios, cutie marks and the mane and tail shapes follow the public convention pages. Clothes, glasses and the balloon are original stand-ins.",
 	"game_version": "0.3.0-maredev",
 	"entry": "res://mods/mare_fair/main.gd"
 }
