@@ -2,6 +2,21 @@
 
 A VR (and desktop) life-sim in Ponyville. Current version: **0.3.0-maredev** ([what's new](https://github.com/homedevanon/home-equestria/releases/tag/0.3.0-maredev)).
 
+### Mare Fair mod
+
+This fork adds the five [Mare Fair](https://marefair.org/mascots/) mascots to Ponyville as a free, unofficial fan mod.
+
+![The five Mare Fair mascots in game](mods/mare_fair/docs/lineup.png)
+
+**[Download Mare Fair 1.1.0](https://github.com/aptrtek/home-equestria/releases/tag/mare-fair-v1.1.0)**, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. See the [mod's README](mods/mare_fair/README.md) for full details.
+
+What the mod changes:
+
+- Adds Fair Flyer, Soirée, Matinée, Morning Mimosa and Fun Raiser as Ponyville residents, with their own bios, schedules, cutie marks and AI personalities.
+- Gives each mare solid hair modelled from the official art. Fair Flyer has her sun hat, Morning Mimosa her spiral glasses and Fun Raiser her half-moon reading glasses.
+- Parks a repainted copy of the town's balloon on Balloon Hill as their home. They take no houses, so nopony who lives in Ponyville is moved or has to share. Twilight's balloon is unchanged.
+- Everything lives in `mods/mare_fair`, and the game runs as normal with the mod switched off.
+
 ### New here? Get the Universal Launcher
 
 | System | Download |
