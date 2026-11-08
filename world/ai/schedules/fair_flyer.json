@@ -1,0 +1,50 @@
+{
+    "character_tag": "fair_flyer",
+    "default_location": "mare_fair_balloon",
+    "schedules": [
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "morning"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Checking the Mare Fair balloon and the day's plan.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "afternoon"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Greeting ponies at the Mare Fair balloon and sending them to the right crew member.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "evening"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Watching the hill to see who is actually enjoying themselves.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "night"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Closing the basket for the night, still talking through tomorrow.",
+            "priority": 0
+        }
+    ]
+}

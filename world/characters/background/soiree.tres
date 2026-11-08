@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="PonyIdentity" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://world/characters/hybrid_mare/pony_identity.gd" id="1"]
+[ext_resource type="Texture2D" path="res://world/characters/mare_fair/marks/soiree.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "soiree"
+display_name = "Soirée"
+race = 0
+coat_fill = Color(0.98039216, 0.96862745, 0.62745098, 1)
+coat_line = Color(0.68627451, 0.67803922, 0.43921569, 1)
+coat_shade = Color(0.88235294, 0.87176471, 0.56470588, 1)
+mane_line = Color(0.16470588, 0.43137255, 0.51764706, 1)
+iris_color = Color(0.90980392, 0.47058824, 0.62745098, 1)
+cutie_mark = ExtResource("2")
+hair_scene = "res://world/characters/background/sweetie_drops_hair.scn"
+hair_prefix = "SweetieDrops"
+tail_terminal_length = 0.144135781
+notice_distance = 4.2
+close_distance = 1.5
+rest_smile = 0.08
+interest_smile = 0.2
+ai_profile = "res://world/characters/background/ai/soiree.json"

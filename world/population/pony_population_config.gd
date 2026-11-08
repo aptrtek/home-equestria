@@ -68,6 +68,9 @@ var newcomers_moved := false
 ## installs had her in Canterlot.
 const PONYVILLE_MOVES_2026_10_23 := ["sweetie_drops"]
 var bonbon_moved := false
+## Mare Fair 2026 mascots live in Ponyville. Added once; a later removal stays removed.
+const MARE_FAIR := ["fair_flyer", "soiree", "matinee", "morning_mimosa", "fun_raiser"]
+var mare_fair_added := false
 
 static func catalogue() -> Dictionary:
 	var result := SIX.duplicate()
@@ -107,6 +110,7 @@ func defaults() -> void:
 	cheerilee_added = true
 	newcomers_moved = true
 	bonbon_moved = true
+	mare_fair_added = true
 	nearby_limit = 24; social_groups = true; error = ""
 	# dev's own region setup is the default (2026-09-29): it overrides the code defaults above.
 	_add_default_background(catalogue(), true)
@@ -136,7 +140,7 @@ func _add_default_background(available: Dictionary, override := false) -> void:
 	background_added = true
 
 func as_dict() -> Dictionary:
-	return {"version": 1, "assignments": assignments.duplicate(), "nearby_limit": nearby_limit, "social_groups": social_groups, "stallions_added": true, "stallion_roster_version": STALLION_ROSTER_VERSION, "filly_households_added": filly_households_added, "zecora_added": zecora_added, "spike_added": spike_added, "cheerilee_added": cheerilee_added, "barbiepone": barbiepone, "background_added": background_added, "newcomers_moved": newcomers_moved, "bonbon_moved": bonbon_moved}
+	return {"version": 1, "assignments": assignments.duplicate(), "nearby_limit": nearby_limit, "social_groups": social_groups, "stallions_added": true, "stallion_roster_version": STALLION_ROSTER_VERSION, "filly_households_added": filly_households_added, "zecora_added": zecora_added, "spike_added": spike_added, "cheerilee_added": cheerilee_added, "barbiepone": barbiepone, "background_added": background_added, "newcomers_moved": newcomers_moved, "bonbon_moved": bonbon_moved, "mare_fair_added": mare_fair_added}
 
 func apply_data(data: Variant, available: Dictionary = {}) -> bool:
 	error = ""
@@ -165,6 +169,7 @@ func apply_data(data: Variant, available: Dictionary = {}) -> bool:
 	if not data.get("barbiepone", false) is bool: error = "Invalid summoned pony flag."; return false
 	if not data.get("newcomers_moved", false) is bool: error = "Invalid Ponyville newcomer migration flag."; return false
 	if not data.get("bonbon_moved", false) is bool: error = "Invalid Bon Bon migration flag."; return false
+	if not data.get("mare_fair_added", false) is bool: error = "Invalid Mare Fair migration flag."; return false
 	assignments = data.assignments.duplicate()
 	barbiepone = data.get("barbiepone", false)
 	for id: String in RETIRED:
@@ -198,6 +203,15 @@ func apply_data(data: Variant, available: Dictionary = {}) -> bool:
 		for id: String in PONYVILLE_MOVES_2026_10_23:
 			if available.has(id): assignments[id] = "ponyville"
 		bonbon_moved = true
+	mare_fair_added = data.get("mare_fair_added", false)
+	if not mare_fair_added:
+		var mare_fair_pending := false
+		for id: String in MARE_FAIR:
+			if not available.has(id):
+				mare_fair_pending = true
+				continue
+			if not assignments.has(id): assignments[id] = "ponyville"
+		if not mare_fair_pending: mare_fair_added = true
 	return true
 
 func _add_filly_households(available: Dictionary) -> void:
@@ -228,6 +242,7 @@ func load_file(path: String = LIVE_PATH) -> bool:
 	var needs_cheerilee_save: bool = not data.get("cheerilee_added", false) and cheerilee_added
 	var needs_newcomer_save: bool = not data.get("newcomers_moved", false)
 	var needs_bonbon_save: bool = not data.get("bonbon_moved", false)
+	var needs_mare_fair_save: bool = not data.get("mare_fair_added", false) and mare_fair_added
 	if needs_bonbon_save:
 		var original_list := ProjectSettings.globalize_path(path)
 		var bonbon_backup := original_list + ".before-bonbon-ponyville"
@@ -255,7 +270,7 @@ func load_file(path: String = LIVE_PATH) -> bool:
 			error = "Could not back up the resident list."; return false
 		return save_file(path)
 	if needs_filly_save: return save_file(path)
-	if needs_zecora_save or needs_spike_save or needs_cheerilee_save or needs_newcomer_save or needs_bonbon_save: return save_file(path)
+	if needs_zecora_save or needs_spike_save or needs_cheerilee_save or needs_newcomer_save or needs_bonbon_save or needs_mare_fair_save: return save_file(path)
 	return true
 
 func assign(id: String, region_id: String) -> void:
