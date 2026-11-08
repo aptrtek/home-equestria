@@ -19,7 +19,7 @@ Built for game version `0.3.0-maredev`. With the mod switched off, Ponyville is 
 | --- | --- | --- | --- |
 | **Fair Flyer** | Pegasus | Two-tone blonde mane and a big wavy tail, wide sun hat with a sunflower | Organises the event |
 | **Soirée** | Earth pony | Rounded cyan bob with a level fringe, short crescent tail | Blunt and sardonic; Matinée's twin; married to aperture_tech |
-| **Matinée** | Pegasus | Swept light-blue mane, high ponytail in a pink scrunchie, tail fading to periwinkle | Bubbly costume enthusiast; Soirée's twin |
+| **Matinée** | Pegasus | Light-blue bob like her twin's, high ponytail in a pink scrunchie, tail fading to periwinkle | Bubbly costume enthusiast; Soirée's twin |
 | **Morning Mimosa** | Earth pony | Green mane, leafy braids tied with oranges, round spiral glasses | Eccentric |
 | **Fun Raiser** | Unicorn | Orange ponytail and curls with a pale streak, gold half-moon reading glasses | Introduces ponies who need something to each other |
 
@@ -37,7 +37,7 @@ Mods are programs, so only install them from people you trust.
 
 ## Meeting them
 
-They are at the Mare Fair balloon on Balloon Hill. From the console you can also bring one to you:
+They live at the Mare Fair balloon on Balloon Hill, a repainted copy of the town's balloon that stays parked. They take no houses in Ponyville, so nopony who lives there is moved or has to share. From the console you can also bring one to you:
 
 ```
 spawn fair flyer
@@ -52,8 +52,9 @@ spawn fun raiser
 They use whichever AI you have set up on the game's **Dialogue & microphone** page. That includes
 a free local model through [Ollama](https://ollama.com) (`http://127.0.0.1:11434/v1`).
 
-The ponies use your configured player name. Soirée treats anyone who is not aperture_tech
-accordingly: she will tell them she is married, and turn them down.
+The ponies know you by the `player_name` in your `ai_config.json`, which on Windows is in
+`%APPDATA%\home-equestria-public\`. Soirée is married to aperture_tech. Anyone else gets the
+honest version: she will tell them she is married, and turn them down.
 
 ## Working on the mod
 

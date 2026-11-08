@@ -81,7 +81,7 @@ def mane():
 def glasses(spiral=True, radius=0.074, wire=0.0042):
     """Round glasses close to the face. With spiral, a fine line marks each lens."""
     parts = []
-    z = -0.375
+    z = -0.405
     for side in (-1.0, 1.0):
         center = np.array((side * 0.095, 0.905, z))
         out = lambda p, c=center: p - c  # noqa: E731

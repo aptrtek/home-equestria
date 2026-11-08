@@ -24,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 from build_fair_flyer_hair import linear, write  # noqa: E402
-from build_soiree_hair import check_closed, fall_out, helmet_fringe, loft, mane_weight, merge, radial, read_glb, tail_out, tail_weight, unit  # noqa: E402
+from build_soiree_hair import bob_shell, check_closed, fall_out, loft, mane_weight, merge, radial, read_glb, tail_out, tail_weight, unit  # noqa: E402
 
 GLB = os.path.join(HERE, "matinee.glb")
 BLUE, PURPLE, PINK, MID = 0, 1, 2, 3
@@ -48,8 +48,9 @@ def head_cap():
 
 def mane():
     blue, pink = head_cap(), []
-    # One smooth fringe, sweeping the opposite way to her twin's.
-    blue.append(helmet_fringe(side=-1.0))
+    # The same rounded bob as her twin, mirrored so the fringe's slit is on her left.
+    verts, faces = bob_shell()
+    blue.append((verts * np.array((-1.0, 1.0, 1.0)), faces[:, ::-1]))
     # Soft full locks framing the cheeks, curving in at the jaw.
     for side in (-1.0, 1.0):
         keys = [(side * x, y, z) for x, y, z in ((0.10, 1.05, -0.19), (0.16, 0.985, -0.18), (0.162, 0.90, -0.19), (0.148, 0.83, -0.235), (0.12, 0.80, -0.27))]

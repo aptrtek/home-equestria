@@ -11,7 +11,7 @@ const IDS: Array[String] = ["fair_flyer", "soiree", "matinee", "morning_mimosa",
 ## The 2025 desktop picture shows the balloon: red and light-blue vertical gores, a red
 ## basket, and a light-blue star. That picture is cropped through the top of the envelope,
 ## so no crown emblem was invented. The PNG is not shipped. The balloon stays parked.
-const BALLOON := "Parked on Balloon Hill, apart from Twilight's flyable balloon. Envelope is an original lathed shape with eight red and light-blue gores, sampled from https://2025.marefair.org/_astro/mf_desktop.iPluWSMU_EDpGb.png. Basket is red with a light-blue star on each side and a front ramp so ponies can step in. The reference crops the top, so the crown is only the stripes closing. Not a second aircraft."
+const BALLOON := "Parked on Balloon Hill, apart from Twilight's flyable balloon. It is the game's town balloon model repainted with eight red and light-blue gores, sampled from https://2025.marefair.org/_astro/mf_desktop.iPluWSMU_EDpGb.png. Basket is red with a light-blue star on each side. The reference crops the top, so the crown is only the stripes closing. Not a second aircraft."
 
 ## What a player should be told is unfinished, keyed by identity id.
 const NOTES := {
