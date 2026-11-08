@@ -14,8 +14,6 @@ const FAMILIES := [
 	["comet_tail", "archer"],
 	# Octavia lives with Vinyl (dev 2026-10-25: "make tavi live with vinyl"). Vinyl keeps her house.
 	["vinyl_scratch", "octavia_melody"],
-	# Matinée and Soirée are twins (marefair.org/mascots). Matinée keeps the house.
-	["matinee", "soiree"],
 ]
 
 static func members(id: String) -> Array:

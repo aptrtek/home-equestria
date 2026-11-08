@@ -1,0 +1,23 @@
+{
+	"lore": [
+		{
+			"id": "mare_fair_visitors",
+			"scope": "authored",
+			"triggers": [
+				"mare fair",
+				"fair flyer",
+				"soiree",
+				"soirée",
+				"matinee",
+				"matinée",
+				"morning mimosa",
+				"fun raiser",
+				"balloon hill"
+			],
+			"viewers": [],
+			"priority": 40,
+			"provenance": "https://marefair.org/mascots/",
+			"text": "Fair Flyer, Soirée, Matinée, Morning Mimosa and Fun Raiser are the Mare Fair mascots, visiting Ponyville. They are the convention's mascots, not a one-year cast. Their hangout is the parked Mare Fair balloon on Balloon Hill, not Twilight's flyable balloon. Fair Flyer is a pegasus who organises the event. Soirée is a blunt earth pony and Matinée is her bubbly pegasus twin. Morning Mimosa is an eccentric earth pony. Fun Raiser is a unicorn who introduces ponies who need something to ponies who have it, and mixes drinks at night. They are guests. Do not invent a past with them that has not been witnessed."
+		}
+	]
+}

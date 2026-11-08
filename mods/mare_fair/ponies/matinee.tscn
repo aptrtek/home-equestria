@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://world/characters/background/background_pony.gd" id="1"]
 [ext_resource type="PackedScene" path="res://world/characters/hybrid_mare/body.glb" id="2"]
-[ext_resource type="Resource" path="res://world/characters/background/fair_flyer.tres" id="3"]
+[ext_resource type="Resource" path="res://mods/mare_fair/ponies/matinee.tres" id="3"]
 
-[node name="FairFlyer" type="CharacterBody3D"]
+[node name="Matinee" type="CharacterBody3D"]
 script = ExtResource("1")
 identity = ExtResource("3")
 model_scene = ExtResource("2")
