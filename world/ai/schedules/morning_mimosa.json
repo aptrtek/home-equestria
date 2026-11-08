@@ -1,0 +1,50 @@
+{
+    "character_tag": "morning_mimosa",
+    "default_location": "mare_fair_balloon",
+    "schedules": [
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "morning"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Rattling off a theory at the Mare Fair balloon before anypony has had coffee.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "afternoon"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Rambling through an adventure to whoever is parked at the balloon.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "evening"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Daring somepony, cheerfully, to do the unreasonable thing.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "night"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "A different mare once the hill gets dark: louder, funnier, still nerdy.",
+            "priority": 0
+        }
+    ]
+}

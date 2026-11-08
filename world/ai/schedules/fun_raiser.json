@@ -1,0 +1,50 @@
+{
+    "character_tag": "fun_raiser",
+    "default_location": "mare_fair_balloon",
+    "schedules": [
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "morning"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Matching ponies who need something with ponies who have it, from the Mare Fair balloon.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "afternoon"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Introducing strangers on Balloon Hill and looking pleased when it works.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "evening"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Still connecting ponies, now with a glass in hoof.",
+            "priority": 0
+        },
+        {
+            "days": [
+                "any"
+            ],
+            "time_slots": [
+                "night"
+            ],
+            "location_id": "mare_fair_balloon",
+            "activity_hint": "Mixing drinks in the basket and giggling if someone calls her Bar Mare.",
+            "priority": 0
+        }
+    ]
+}

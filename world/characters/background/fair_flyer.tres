@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="PonyIdentity" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://world/characters/hybrid_mare/pony_identity.gd" id="1"]
+[ext_resource type="Texture2D" path="res://world/characters/mare_fair/marks/fair_flyer.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "fair_flyer"
+display_name = "Fair Flyer"
+race = 1
+coat_fill = Color(0.70588235, 0.80392157, 0.82745098, 1)
+coat_line = Color(0.49411765, 0.56274510, 0.57921569, 1)
+coat_shade = Color(0.63529412, 0.72352941, 0.74470588, 1)
+mane_line = Color(0.47843137, 0.35294118, 0.15686275, 1)
+iris_color = Color(0.87843137, 0.40784314, 0.21960784, 1)
+cutie_mark = ExtResource("2")
+hair_scene = "res://world/characters/background/lily_valley_hair.scn"
+hair_prefix = "LilyValley"
+tail_terminal_length = 0.13171021
+notice_distance = 7.5
+close_distance = 2.0
+rest_smile = 0.8
+interest_smile = 0.65
+ai_profile = "res://world/characters/background/ai/fair_flyer.json"

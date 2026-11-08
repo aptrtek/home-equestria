@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="PonyIdentity" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://world/characters/hybrid_mare/pony_identity.gd" id="1"]
+[ext_resource type="Texture2D" path="res://world/characters/mare_fair/marks/morning_mimosa.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "morning_mimosa"
+display_name = "Morning Mimosa"
+race = 0
+coat_fill = Color(1.00000000, 0.67450980, 0.45882353, 1)
+coat_line = Color(0.70000000, 0.47215686, 0.32117647, 1)
+coat_shade = Color(0.90000000, 0.60705882, 0.41294118, 1)
+mane_line = Color(0.05490196, 0.33333333, 0.12549020, 1)
+iris_color = Color(0.97254902, 0.78431373, 0.03137255, 1)
+cutie_mark = ExtResource("2")
+hair_scene = "res://world/characters/background/golden_harvest_hair.scn"
+hair_prefix = "GoldenHarvest"
+tail_terminal_length = 0.153006238
+notice_distance = 6.0
+close_distance = 1.7
+rest_smile = 0.4
+interest_smile = 0.75
+ai_profile = "res://world/characters/background/ai/morning_mimosa.json"

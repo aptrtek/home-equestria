@@ -2,11 +2,13 @@ extends "res://world/characters/hybrid_mare/hybrid_mare.gd"
 ## Additional identities reuse the approved hybrid without changing its source files.
 const ANCHORS=preload("res://world/characters/hybrid_mare/hybrid_tail_anchor.gd")
 const PHYSICS=preload("res://world/characters/hybrid_mare/hybrid_tail_physics.gd")
+const MARE_FAIR_MANE := preload("res://world/characters/mare_fair/mane_recolor.gd")
 
 func _apply_show_shading(model: Node) -> void:
 	super._apply_show_shading(model)
 	if identity != null and identity.character() == "strawberry_sunrise":
 		_solid_strawberry_hair(model)
+	MARE_FAIR_MANE.apply(self, model)
 	if identity == null or identity.character() != "braeburn": return
 	var meshes: Array = [model] if model is MeshInstance3D else model.find_children("*", "MeshInstance3D", true, false)
 	for mi: MeshInstance3D in meshes:
@@ -71,6 +73,8 @@ func _ready()->void:
 				PHYSICS._contact_cache[anchored.get_instance_id()]=anchored.get_meta("contacts")
 	super._ready()
 	if identity != null and identity.character() == "vinyl_scratch": _attach_vinyl_glasses()
+	if identity != null and identity.character() in ["fun_raiser", "morning_mimosa"]:
+		_attach_head_accessory("res://world/characters/background/accessories/vinyl_glasses.scn", "MareFairGlasses")
 	if identity != null and identity.character() == "braeburn": _attach_braeburn_hat()
 	if tail_motion != null and tail_motion.springs != null:
 		var previous_springs = tail_motion.springs
@@ -111,13 +115,17 @@ func _attach_braeburn_hat() -> void:
 	_exclude_world_ink()
 
 func _attach_vinyl_glasses() -> void:
-	var path := "res://world/characters/background/accessories/vinyl_glasses.scn"
+	_attach_head_accessory("res://world/characters/background/accessories/vinyl_glasses.scn", "VinylGlasses")
+
+
+## Borrowed frames. Missing source-data files are skipped; the donor mesh is unchanged.
+func _attach_head_accessory(path: String, accessory_name: String) -> void:
 	if hair_skeleton == null or not ResourceLoader.exists(path): return
 	# Duplicate the identity, so shared resources and generated inputs stay untouched.
 	identity = identity.duplicate()
-	if "VinylGlasses" not in identity.accessories: identity.accessories.append("VinylGlasses")
+	if accessory_name not in identity.accessories: identity.accessories.append(accessory_name)
 	var attachment := BoneAttachment3D.new()
-	attachment.name = "VinylGlassesAttachment"; attachment.bone_name = "mHead"
+	attachment.name = accessory_name + "Attachment"; attachment.bone_name = "mHead"
 	hair_skeleton.add_child(attachment)
 	var packed: PackedScene = load(path)
 	var source := packed.instantiate()
@@ -126,5 +134,5 @@ func _attach_vinyl_glasses() -> void:
 	if source is MeshInstance3D: meshes.append(source)
 	for mesh: MeshInstance3D in meshes:
 		mesh.reparent(attachment, false)
-		mesh.name = "VinylGlasses"
+		mesh.name = accessory_name
 	if source.get_parent() == attachment and not source is MeshInstance3D: source.queue_free()

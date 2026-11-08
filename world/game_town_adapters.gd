@@ -58,6 +58,10 @@ static func attach(game: Node3D, town: Node) -> void:
 	var painting: Script = load("res://world/painting/station_install.gd") as Script
 	if painting != null and painting.can_instantiate(): painting.call("attach", town)
 	game.balloon=preload("res://world/vehicles/balloon/balloon.gd").attach(town)
+	# Parked Mare Fair balloon on Balloon Hill. Loaded, not preloaded: it is a prop, and a
+	# broken script must not stop the town. Twilight's balloon remains the flyable one.
+	var mare_fair_balloon: Script = load("res://world/characters/mare_fair/balloon.gd") as Script
+	if mare_fair_balloon != null and mare_fair_balloon.can_instantiate(): mare_fair_balloon.call("attach", town)
 	# Small parts stop casting shadows; houses become occluders (world/performance/).
 	var budget: Node = preload("res://world/performance/town_render_budget.gd").new()
 	budget.name = "RenderBudget"; town.add_child(budget); budget.setup(town)
