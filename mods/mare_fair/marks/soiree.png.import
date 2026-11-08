@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lscdypcd685d"
-path="res://.godot/imported/soiree.png-6373eb5a4bd5349a9bb137f10c7edb4d.ctex"
+uid="uid://byvyxshrsmq1b"
+path="res://.godot/imported/soiree.png-4b7528165b948cc81dcd95bbefccd6ba.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://mods/mare_fair/marks/soiree.png"
-dest_files=["res://.godot/imported/soiree.png-6373eb5a4bd5349a9bb137f10c7edb4d.ctex"]
+dest_files=["res://.godot/imported/soiree.png-4b7528165b948cc81dcd95bbefccd6ba.ctex"]
 
 [params]
 

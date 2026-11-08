@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dek4ag7le410s"
-path="res://.godot/imported/matinee.png-c03495c7ec07dd688d7c37344f99cec9.ctex"
+uid="uid://curabirb858yv"
+path="res://.godot/imported/matinee.png-ae28adef680b1bdf0b37d868aa775e5e.ctex"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://mods/mare_fair/marks/matinee.png"
-dest_files=["res://.godot/imported/matinee.png-c03495c7ec07dd688d7c37344f99cec9.ctex"]
+dest_files=["res://.godot/imported/matinee.png-ae28adef680b1bdf0b37d868aa775e5e.ctex"]
 
 [params]
 
