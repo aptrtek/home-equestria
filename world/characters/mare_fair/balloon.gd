@@ -1,10 +1,17 @@
 extends Node3D
 ## Parked Mare Fair balloon on Balloon Hill, where the five mascots gather.
 ## Twilight's balloon stays the flyable one. This one does not lift: no helm, no burner.
-## The envelope is the town balloon mesh when that scenery is loaded, recolored; the
-## basket is built here. No official Mare Fair balloon art was on the mascot pages.
+## Shape and colours follow the 2025 desktop art: red and light-blue vertical gores,
+## a red basket, and a light-blue star. The top of that picture is cropped, so the
+## crown is only a plain rounded close of the same stripes. The picture is not shipped.
 
 const FITTINGS := preload("res://world/vehicles/balloon/basket.gd")
+const ENVELOPE_SHADER := preload("res://world/characters/mare_fair/envelope.gdshader")
+const RED := Color(0.941176, 0.282353, 0.313725)
+const STRIPE_BLUE := Color(0.376471, 0.564706, 0.815686)
+const STAR_BLUE := Color(0.490196, 0.705882, 0.878431)
+const INTERIOR := Color(0.165, 0.188, 0.275)
+const SEGMENTS := 48
 const SPOT_ID := "mare_fair_balloon"
 ## Clear of Twilight's balloon (280.5, -296), the easel (266, -285.5) and the picnic tables.
 const POSE := Vector3(262.0, 6.78, -308.0)
@@ -48,94 +55,109 @@ func _process(_delta: float) -> void:
 
 
 func _envelope() -> void:
-	var town := get_parent()
-	var source := town.find_child("airballoon_01", true, false) as Node3D if town != null else null
-	if source == null:
-		_plain_envelope()
-		return
-	var copy := source.duplicate() as Node3D
-	copy.name = "Envelope"
-	copy.set_meta("ai_id", "")
-	copy.set_meta("ai_label", "")
-	add_child(copy)
-	copy.transform = Transform3D.IDENTITY
-	for body in copy.find_children("*", "CollisionObject3D", true, false):
-		var collision := body as CollisionObject3D
-		collision.collision_layer = 0
-		collision.collision_mask = 0
-	var purple := Color("6b3a86")
-	var meshes: Array = copy.find_children("*", "MeshInstance3D", true, false)
-	if copy is MeshInstance3D: meshes.append(copy)
-	for mesh: MeshInstance3D in meshes:
-		if mesh.mesh == null: continue
-		for surface in mesh.mesh.get_surface_count():
-			var active := mesh.get_active_material(surface)
-			if active == null: continue
-			var material := active.duplicate()
-			if material is StandardMaterial3D:
-				var standard := material as StandardMaterial3D
-				standard.albedo_color = standard.albedo_color.lerp(purple, 0.62)
-			elif material is ShaderMaterial:
-				var color: Variant = (material as ShaderMaterial).get_shader_parameter("color")
-				if color is Color:
-					(material as ShaderMaterial).set_shader_parameter("color", (color as Color).lerp(purple, 0.5))
-			mesh.set_surface_override_material(surface, material)
-	var band := MeshInstance3D.new()
-	var torus := TorusMesh.new()
-	torus.inner_radius = 2.55
-	torus.outer_radius = 3.15
-	band.mesh = torus
-	band.material_override = FITTINGS.material(Color("e2bb62"))
-	band.position.y = 5.35
-	add_child(band)
-
-
-func _plain_envelope() -> void:
+	var profile := PackedVector2Array([
+		Vector2(1.25, 0.0), Vector2(1.55, 0.4), Vector2(2.15, 1.15),
+		Vector2(2.8, 2.2), Vector2(3.15, 3.45), Vector2(2.95, 4.55),
+		Vector2(2.25, 5.4), Vector2(1.25, 6.05), Vector2(0.18, 6.4),
+	])
 	var mesh := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = 3.1
-	sphere.height = 7.2
-	mesh.mesh = sphere
-	mesh.material_override = FITTINGS.material(Color("6b3a86"))
-	mesh.position.y = 5.6
+	mesh.name = "Envelope"
+	mesh.mesh = _lathe(profile)
+	var material := ShaderMaterial.new()
+	material.shader = ENVELOPE_SHADER
+	mesh.material_override = material
+	mesh.position.y = 1.42
 	add_child(mesh)
 
 
+func _lathe(profile: PackedVector2Array) -> ArrayMesh:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var rings := profile.size()
+	for ring in rings:
+		var radius := profile[ring].x
+		var y := profile[ring].y
+		var v := float(ring) / float(rings - 1)
+		var previous: Vector2 = profile[maxi(ring - 1, 0)]
+		var next: Vector2 = profile[mini(ring + 1, rings - 1)]
+		var tangent := next - previous
+		var normal_2d := Vector2(tangent.y, -tangent.x).normalized()
+		if normal_2d.x < 0.0: normal_2d = -normal_2d
+		for seg in SEGMENTS + 1:
+			var u := float(seg) / float(SEGMENTS)
+			var ang := u * TAU
+			var out := Vector3(cos(ang), 0.0, sin(ang))
+			tool.set_uv(Vector2(u, v))
+			tool.set_normal((out * normal_2d.x + Vector3.UP * normal_2d.y).normalized())
+			tool.add_vertex(Vector3(out.x * radius, y, out.z * radius))
+	var stride := SEGMENTS + 1
+	for ring in rings - 1:
+		for seg in SEGMENTS:
+			var a := ring * stride + seg
+			var b := a + 1
+			var c := a + stride
+			var d := c + 1
+			tool.add_index(a)
+			tool.add_index(c)
+			tool.add_index(b)
+			tool.add_index(b)
+			tool.add_index(c)
+			tool.add_index(d)
+	return tool.commit()
+
+
 func _basket() -> void:
-	var wood := Color("955d31")
-	var purple := Color("a877ad")
-	var gold := Color("e2bb62")
 	_body = StaticBody3D.new()
 	_body.name = "Basket"
 	_body.collision_layer = 1
 	_body.collision_mask = 0
 	add_child(_body)
-	for i in 12:
-		FITTINGS.box(_body, Vector3(-1.375 + i * 0.25, 0.18, 0), Vector3(0.243, 0.16, 2.6), wood.lightened(0.04 * (i % 3)))
+	FITTINGS.box(_body, Vector3(0, 0.16, 0.1), Vector3(2.7, 0.16, 2.35), INTERIOR)
 	var deck := CollisionShape3D.new()
 	var deck_box := BoxShape3D.new()
-	deck_box.size = Vector3(3.0, 0.18, 2.7)
+	deck_box.size = Vector3(2.7, 0.18, 2.4)
 	deck.shape = deck_box
-	deck.position.y = 0.17
+	deck.position = Vector3(0, 0.16, 0.1)
 	_body.add_child(deck)
-	for x in [-1.5, 1.5]:
-		FITTINGS.box(_body, Vector3(x, 0.82, 0), Vector3(0.14, 1.28, 2.7), purple, true)
-		FITTINGS.box(_body, Vector3(x, 1.46, 0), Vector3(0.21, 0.14, 2.86), gold)
-	FITTINGS.box(_body, Vector3(0, 0.82, 1.35), Vector3(3.0, 1.28, 0.14), purple, true)
-	FITTINGS.box(_body, Vector3(0, 1.46, 1.35), Vector3(3.2, 0.14, 0.21), gold)
-	for x in [-1.03, 1.03]:
-		FITTINGS.box(_body, Vector3(x, 0.82, -1.35), Vector3(0.95, 1.28, 0.14), purple, true)
-		FITTINGS.box(_body, Vector3(x, 1.46, -1.35), Vector3(0.95, 0.14, 0.21), gold)
-	FITTINGS.box(_body, Vector3(0, 0.55, 1.02), Vector3(2.5, 0.12, 0.48), Color("714633"), true)
+	for x in [-1.35, 1.35]:
+		FITTINGS.box(_body, Vector3(x, 0.78, 0.1), Vector3(0.16, 1.24, 2.55), RED, true)
+	FITTINGS.box(_body, Vector3(0, 0.78, 1.28), Vector3(2.7, 1.24, 0.16), RED, true)
+	for x in [-0.9, 0.9]:
+		FITTINGS.box(_body, Vector3(x, 0.78, -1.08), Vector3(0.78, 1.24, 0.16), RED, true)
 	var ramp := StaticBody3D.new()
 	ramp.name = "Ramp"
 	ramp.collision_layer = 1
 	ramp.collision_mask = 0
-	ramp.position = Vector3(0, 0.17, -1.82)
-	ramp.rotation.x = -0.18
+	ramp.position = Vector3(0, 0.14, -1.7)
+	ramp.rotation.x = -0.2
 	_body.add_child(ramp)
-	FITTINGS.box(ramp, Vector3.ZERO, Vector3(1.05, 0.09, 1.1), wood, true)
-	FITTINGS.label(_body, Vector3(-1.62, 0.9, 0), "MARE FAIR", PI * 0.5)
+	FITTINGS.box(ramp, Vector3.ZERO, Vector3(1.05, 0.08, 1.05), RED, true)
+	_star(Vector3(-1.46, 0.78, 0.1), -PI * 0.5)
+	_star(Vector3(1.46, 0.78, 0.1), PI * 0.5)
+
+
+func _star(at: Vector3, yaw: float) -> void:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var outer := 0.46
+	var inner := 0.19
+	tool.set_normal(Vector3.FORWARD)
+	tool.add_vertex(Vector3.ZERO)
+	for i in 10:
+		var ang := -PI * 0.5 + float(i) * PI / 5.0
+		var radius := outer if i % 2 == 0 else inner
+		tool.set_normal(Vector3.FORWARD)
+		tool.add_vertex(Vector3(cos(ang) * radius, sin(ang) * radius, 0.0))
+	for i in 10:
+		tool.add_index(0)
+		tool.add_index(1 + i)
+		tool.add_index(1 + (i + 1) % 10)
+	var mesh := MeshInstance3D.new()
+	mesh.mesh = tool.commit()
+	mesh.material_override = FITTINGS.material(STAR_BLUE)
+	mesh.position = at
+	mesh.rotation.y = yaw
+	_body.add_child(mesh)
 
 
 func _snap_to_ground() -> void:

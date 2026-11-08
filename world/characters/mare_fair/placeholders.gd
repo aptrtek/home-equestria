@@ -5,10 +5,10 @@ extends RefCounted
 
 const IDS: Array[String] = ["fair_flyer", "soiree", "matinee", "morning_mimosa", "fun_raiser"]
 
-## No Mare Fair balloon drawing is on the mascot pages. The hangout reuses the town
-## balloon envelope when that scenery is loaded, tinted violet with a gold band, and a
-## basket built in the same way as Twilight's. It stays parked. Twilight's balloon still flies.
-const BALLOON := "Parked on Balloon Hill, apart from Twilight's flyable balloon. Envelope is the existing town balloon mesh recolored violet and gold when scenery is present, otherwise a plain violet envelope. Basket, ramp and bench are original geometry. Not official Mare Fair art, and not a second aircraft."
+## The 2025 desktop picture shows the balloon: red and light-blue vertical gores, a red
+## basket, and a light-blue star. That picture is cropped through the top of the envelope,
+## so no crown emblem was invented. The PNG is not shipped. The balloon stays parked.
+const BALLOON := "Parked on Balloon Hill, apart from Twilight's flyable balloon. Envelope is an original lathed shape with eight red and light-blue gores, sampled from https://2025.marefair.org/_astro/mf_desktop.iPluWSMU_EDpGb.png. Basket is red with a light-blue star on each side and a front ramp so ponies can step in. The reference crops the top, so the crown is only the stripes closing. Not a second aircraft."
 
 ## What a player should be told is unfinished, keyed by identity id.
 const NOTES := {
