@@ -6,7 +6,9 @@ const BALLOON := preload("res://mods/mare_fair/balloon.gd")
 const PONY := "res://world/characters/background/background_pony.gd"
 const GLASSES := "res://world/characters/background/accessories/vinyl_glasses.scn"
 const IDS: Array[String] = ["fair_flyer", "soiree", "matinee", "morning_mimosa", "fun_raiser"]
-const GLASSED: Array[String] = ["fun_raiser", "morning_mimosa"]
+## Morning Mimosa's and Fun Raiser's own glasses are part of their hair files, so nopony
+## needs a borrowed pair.
+const GLASSED: Array[String] = []
 var _dressed: Dictionary = {}
 
 

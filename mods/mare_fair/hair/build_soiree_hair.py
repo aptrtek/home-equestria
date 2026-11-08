@@ -8,8 +8,8 @@ Needs numpy. Run it from anywhere:
 --preview also needs Pillow and writes side, front, rear and top renders.
 
 The shapes follow the official art (marefair.org/mascots and the 2025 site clips): a
-swept fringe over a cap, falls down both sides of the neck that curl forward at the
-chest, and a short crescent tail. That art has no standing side view, so the profile
+rounded bob whose edge is the fringe, a comma curl at each jaw, two swept flicks at the
+crown, and a short crescent tail. That art has no standing side view, so the profile
 is modelled from it, not traced. The pictures are not shipped.
 
 Every lock is a closed loft, so the hair has real thickness from any angle.
@@ -111,67 +111,117 @@ def tail_out(_point):
     return (1.0, 0.0, 0.0)
 
 
+def helmet_fringe(side=1.0, drop=0.032):
+    """One smooth fringe lying close on the forehead, sloping down toward one side.
+
+    side 1 sweeps down to her right, -1 to her left. drop is how far the edge falls.
+    """
+    angles = np.radians(np.linspace(-62.0, 72.0, 9))
+    arc = [(-side * 0.178 * np.sin(a), 1.052 - drop * np.sin(a), -0.215 - 0.168 * np.cos(a)) for a in angles]
+    return loft(arc, [0.012, 0.05, 0.062, 0.066, 0.066, 0.064, 0.058, 0.04, 0.004], [0.005, 0.012, 0.016, 0.018, 0.018, 0.018, 0.016, 0.012, 0.003], radial, steps=8, sides=20)
+
+
+def bob_shell(columns=144, rows=24):
+    """One closed rounded bob. Its lower edge is the fringe: level across the forehead,
+    overhanging it a little, rounding down at the corners by the eyes, and carrying on
+    down the back of the head to a rounded hem at the nape."""
+    top, center_z, radius_x, radius_z = 1.128, -0.225, 0.19, 0.188
+    verts = []
+    for row in range(rows):
+        f = (row / rows) ** 1.25
+        for column in range(columns):
+            theta = column * 2.0 * np.pi / columns
+            turned = abs(np.arctan2(np.sin(theta), np.cos(theta)))
+            degrees = np.degrees(turned)
+            # Level across the forehead, down to a crisp corner by each eye, then cut back up.
+            down = np.clip((degrees - 38.0) / 24.0, 0.0, 1.0)
+            down = down * down * (3.0 - 2.0 * down)
+            back_up = np.clip((degrees - 62.0) / 14.0, 0.0, 1.0)
+            dome_edge = 1.012 - 0.036 * down + 0.02 * back_up
+            # One slit in the fringe on her right, as in the portrait.
+            signed = np.degrees(np.arctan2(np.sin(theta), np.cos(theta)))
+            dome_edge += 0.03 * np.exp(-(((signed + 25.0) / 3.0) ** 2))
+            # Behind the ears the shell carries on down to one rounded hem.
+            nape = np.clip((degrees - 102.0) / 48.0, 0.0, 1.0)
+            nape = nape * nape * (3.0 - 2.0 * nape)
+            hem = 0.825 + 0.05 * ((180.0 - degrees) / 80.0) ** 2
+            edge = dome_edge + (hem - dome_edge) * nape
+            y = edge + (top - edge) * f
+            height = np.clip((y - dome_edge) / (top - dome_edge), 0.0, 1.0)
+            shape = np.sqrt(max(1.0 - height * height, 0.0)) * (0.955 if row == 0 else 1.0)
+            below = np.clip((1.0 - y) / 0.17, 0.0, 1.0)
+            # The rounded edge of the hem tucks in toward the neck.
+            tuck = np.clip((edge + 0.05 - y) / 0.05, 0.0, 1.0) * nape
+            tuck_x, tuck_z = 1.0 - 0.1 * tuck * tuck, 1.0 - 0.08 * tuck * tuck
+            # The lower back is squarer in plan, so the sides flow into it without a seam.
+            power = 1.0 - 0.4 * nape * np.clip((1.05 - y) / 0.1, 0.0, 1.0)
+            sine, cosine = np.sin(theta), np.cos(theta)
+            sine = np.sign(sine) * abs(sine) ** power
+            cosine = np.sign(cosine) * abs(cosine) ** power
+            depth = radius_z if cosine >= 0.0 else 0.165
+            # The corner of the fringe stands a little proud of the face.
+            proud = 1.0 + 0.04 * np.exp(-(((degrees - 62.0) / 10.0) ** 2)) * (1.0 - f) ** 3
+            x = radius_x * sine * shape * (1.0 - 0.06 * below * below) * tuck_x * proud
+            z = center_z - depth * cosine * shape * (1.0 - 0.15 * below * below) * tuck_z * proud
+            verts.append((x, y, z))
+    apex, base = rows * columns, rows * columns + 1
+    verts += [(0.0, top, center_z), (0.0, 0.99, center_z)]
+    faces = []
+    for row in range(rows - 1):
+        for column in range(columns):
+            a, b = row * columns + column, row * columns + (column + 1) % columns
+            c, d = a + columns, b + columns
+            faces += [(a, c, b), (b, c, d)]
+    for column in range(columns):
+        a, b = column, (column + 1) % columns
+        faces.append((base, a, b))
+        last = (rows - 1) * columns
+        faces.append((apex, last + b, last + a))
+    verts, faces = np.array(verts, float), np.array(faces)
+    a, b, c = verts[faces[:, 0]], verts[faces[:, 1]], verts[faces[:, 2]]
+    if np.sum(np.einsum("ij,ij->i", a - verts.mean(0), np.cross(b - verts.mean(0), c - verts.mean(0)))) < 0:
+        faces = faces[:, ::-1]
+    return verts, faces
+
+
+SIDE_CURL = ((0.12, 1.0, -0.15), (0.128, 0.94, -0.13), (0.13, 0.89, -0.142), (0.132, 0.858, -0.18), (0.136, 0.845, -0.235), (0.134, 0.86, -0.278), (0.13, 0.925, -0.272))
+
+
+def mane_accents():
+    """A periwinkle underside peeking below each curl, as in the portraits."""
+    locks = []
+    for side in (-1.0, 1.0):
+        keys = [(side * (x - 0.012), y - 0.01, z) for x, y, z in SIDE_CURL[2:]]
+        locks.append(loft(keys, [0.04, 0.04, 0.03, 0.016, 0.002], [0.012, 0.012, 0.01, 0.006, 0.002], fall_out(side), steps=10, sides=14))
+    return locks
+
+
 def mane():
     locks = []
     # The cap: a closed dome that sits on the skull, its underside inside the head.
     heights = np.linspace(-0.995, 0.995, 15)
-    dome_keys = [(0.0, 0.995 + 0.108 * h, -0.225) for h in heights]
+    dome_keys = [(0.0, 0.995 + 0.128 * h, -0.225) for h in heights]
     rim = np.sqrt(1.0 - heights * heights)
-    locks.append(loft(dome_keys, 0.168 * rim, 0.15 * rim, lambda _p: (0.0, 0.0, 1.0), steps=3, sides=32))
-    # The fringe sweeps from a part on her left across the forehead to her right,
-    # its overlapping ends stopping just above the eye.
-    part = np.array((0.05, 1.085, -0.21))
-    for tip in [(0.085, 1.035, -0.355), (0.05, 1.025, -0.378), (-0.03, 1.015, -0.39), (-0.11, 1.0, -0.365), (-0.168, 0.975, -0.30)]:
-        tip = np.array(tip)
-        mid = (part + tip) / 2 + unit(radial((part + tip) / 2)) * 0.025
-        near = tip + np.array((0.04, 0.02, 0.012))
-        locks.append(loft([part, mid, near, tip], [0.04, 0.09, 0.08, 0.03], [0.016, 0.03, 0.022, 0.008], radial))
-    # Back of the head: overlapping locks that tuck into the crest.
-    for tip in [(0.13, 0.93, -0.13), (0.065, 0.895, -0.092), (0.0, 0.885, -0.085), (-0.065, 0.895, -0.092), (-0.13, 0.93, -0.13)]:
-        tip = np.array(tip)
-        start = np.array((tip[0] * 0.3, 1.08, -0.18))
-        mid = (start + tip) / 2 + unit(radial((start + tip) / 2)) * 0.03
-        locks.append(loft([start, mid, tip], [0.04, 0.08, 0.05], [0.015, 0.028, 0.012], radial))
-    # The crest closes the back of the neck between the falls and ends on the withers.
-    locks.append(
-        loft(
-            [(0, 0.985, -0.085), (0, 0.89, -0.088), (0, 0.81, -0.115), (0, 0.765, -0.085), (0, 0.755, -0.04)],
-            [0.11, 0.125, 0.112, 0.07, 0.004],
-            [0.02, 0.03, 0.03, 0.02, 0.004],
-            lambda _p: (0.0, 0.35, 1.0),
-            steps=10,
-            sides=20,
-        )
-    )
-    # Two flicks at the crown, as in the drawings.
-    for x, reach in ((0.015, 0.0), (-0.035, -0.03)):
-        locks.append(
-            loft(
-                [(x, 1.085, -0.16), (x * 1.5, 1.11, -0.09 + reach), (x * 2.0, 1.105, -0.015 + reach)],
-                [0.03, 0.03, 0.001],
-                [0.012, 0.012, 0.002],
-                radial,
-                steps=6,
-                sides=12,
-            )
-        )
-    # The falls: over the head, down the neck, forward and up in a curl at the chest.
+    locks.append(loft(dome_keys, 0.172 * rim, 0.148 * rim, lambda _p: (0.0, 0.0, 1.0), steps=3, sides=32))
+    locks.append(bob_shell())
+    # A slim lock falls in front of each ear from under the bob.
     for side in (-1.0, 1.0):
-        keys = [(side * x, y, z) for x, y, z in (
-            (0.10, 1.05, -0.17),
-            (0.155, 0.985, -0.14),
-            (0.14, 0.89, -0.115),
-            (0.105, 0.79, -0.12),
-            (0.095, 0.70, -0.16),
-            (0.092, 0.65, -0.205),
-            (0.088, 0.645, -0.25),
-            (0.08, 0.675, -0.265),
-        )]
+        keys = [(side * x, y, z) for x, y, z in ((0.1, 1.1, -0.2), (0.176, 1.03, -0.235), (0.188, 0.97, -0.245), (0.178, 0.925, -0.262))]
+        locks.append(loft(keys, [0.012, 0.02, 0.016, 0.002], [0.01, 0.014, 0.011, 0.002], fall_out(side), steps=8, sides=14))
+    # Two flicks at the crown, as in the drawings.
+    for keys, width in (
+        (((0.03, 1.075, -0.095), (0.024, 1.122, -0.16), (0.008, 1.132, -0.235), (-0.034, 1.13, -0.31)), 0.03),
+        (((-0.05, 1.07, -0.1), (-0.06, 1.112, -0.155), (-0.08, 1.119, -0.215), (-0.108, 1.107, -0.275)), 0.026),
+    ):
+        locks.append(loft(keys, [0.004, width, width * 0.6, 0.001], [0.003, 0.009, 0.007, 0.002], radial, steps=10, sides=12))
+    for side in (-1.0, 1.0):
+        # The thick rounded C of hair behind the ear, curling forward under the jaw.
+        keys = [(side * x, y, z) for x, y, z in SIDE_CURL]
         locks.append(
             loft(
                 keys,
-                [0.03, 0.05, 0.052, 0.046, 0.04, 0.034, 0.02, 0.002],
-                [0.016, 0.024, 0.024, 0.022, 0.02, 0.016, 0.01, 0.003],
+                [0.05, 0.06, 0.058, 0.048, 0.034, 0.016, 0.001],
+                [0.018, 0.018, 0.018, 0.02, 0.018, 0.011, 0.002],
                 fall_out(side),
                 steps=10,
             )
@@ -189,11 +239,11 @@ def tail():
         steps=10,
         sides=20,
     )
-    # A small inner flick on the concave edge, as in the portrait.
+    # A small periwinkle flick on the concave edge, as in the portrait.
     flick = loft(
-        [(0, 0.60, 0.30), (0, 0.53, 0.325), (0, 0.475, 0.30)],
-        [0.018, 0.024, 0.001],
-        [0.018, 0.022, 0.002],
+        [(0, 0.60, 0.285), (0, 0.53, 0.30), (0, 0.46, 0.27)],
+        [0.024, 0.036, 0.001],
+        [0.02, 0.03, 0.002],
         tail_out,
         steps=8,
         sides=12,
@@ -353,13 +403,28 @@ def main():
     parser.add_argument("--preview")
     args = parser.parse_args()
     rig, blob = read_glb(GLB)
-    mane_locks, tail_locks = mane(), tail()
-    check_closed(mane_locks + tail_locks)
+    mane_locks, tail_locks, accents = mane(), tail(), mane_accents()
+    check_closed(mane_locks + tail_locks + accents)
     parts = [
         ("SoireeDevkitMane", merge(mane_locks, mane_weight)),
         ("SoireeDevkitTail", merge(tail_locks, tail_weight)),
     ]
-    write(GLB, rig, blob, parts)
+    # Imported here because the shared multi-material writer imports this module.
+    from build_fair_flyer_hair import linear
+    from build_fair_flyer_hair import write as write_groups
+
+    if len(rig["materials"]) == 1:
+        rig["materials"].append(json.loads(json.dumps(rig["materials"][0])) | {"name": "SoireeHair1"})
+    rig["materials"][1]["pbrMetallicRoughness"]["baseColorFactor"] = linear("8E9CE0")
+    write_groups(
+        GLB,
+        rig,
+        blob,
+        [
+            ("SoireeDevkitMane", {0: merge(mane_locks, mane_weight), 1: merge(accents, mane_weight)}),
+            ("SoireeDevkitTail", {0: merge(tail_locks[:1], tail_weight), 1: merge(tail_locks[1:], tail_weight)}),
+        ],
+    )
     for name, (verts, _n, _j, _w, faces) in parts:
         print(name, "verts", len(verts), "tris", len(faces), "min", verts.min(0).round(3), "max", verts.max(0).round(3))
     print("bytes", os.path.getsize(GLB))
