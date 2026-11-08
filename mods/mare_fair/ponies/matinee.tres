@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="PonyIdentity" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://world/characters/hybrid_mare/pony_identity.gd" id="1"]
-[ext_resource type="Texture2D" path="res://world/characters/mare_fair/marks/matinee.png" id="2"]
+[ext_resource type="Texture2D" path="res://mods/mare_fair/marks/matinee.png" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -21,4 +21,4 @@ notice_distance = 8.0
 close_distance = 1.9
 rest_smile = 1.0
 interest_smile = 0.85
-ai_profile = "res://world/characters/background/ai/matinee.json"
+ai_profile = "res://mods/mare_fair/ponies/ai/matinee.json"

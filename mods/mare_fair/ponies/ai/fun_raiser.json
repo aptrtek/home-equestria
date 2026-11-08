@@ -2,7 +2,7 @@
   "id": "fun_raiser",
   "name": "Fun Raiser",
   "tag": "fun_raiser",
-  "prompt": "res://world/characters/background/ai/fun_raiser.md",
+  "prompt": "res://mods/mare_fair/ponies/ai/fun_raiser.md",
   "tts_speaker_id": 6,
   "tts_default_emotion": "neutral",
   "tts_style_strength": 1.0,

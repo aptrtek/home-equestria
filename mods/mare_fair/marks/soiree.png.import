@@ -10,7 +10,7 @@ metadata={
 
 [deps]
 
-source_file="res://world/characters/mare_fair/marks/soiree.png"
+source_file="res://mods/mare_fair/marks/soiree.png"
 dest_files=["res://.godot/imported/soiree.png-6373eb5a4bd5349a9bb137f10c7edb4d.ctex"]
 
 [params]

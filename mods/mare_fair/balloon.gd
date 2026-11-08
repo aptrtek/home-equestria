@@ -6,7 +6,7 @@ extends Node3D
 ## crown is only a plain rounded close of the same stripes. The picture is not shipped.
 
 const FITTINGS := preload("res://world/vehicles/balloon/basket.gd")
-const ENVELOPE_SHADER := preload("res://world/characters/mare_fair/envelope.gdshader")
+const ENVELOPE_SHADER := preload("res://mods/mare_fair/envelope.gdshader")
 const RED := Color(0.941176, 0.282353, 0.313725)
 const STRIPE_BLUE := Color(0.376471, 0.564706, 0.815686)
 const STAR_BLUE := Color(0.490196, 0.705882, 0.878431)
@@ -186,12 +186,12 @@ func _register_spot() -> void:
 	for service in get_tree().get_nodes_in_group("pony_navigation"):
 		var content := service.get_parent() as Node3D
 		if content == null or not content.is_ancestor_of(self): continue
-		var layers: MapLayers = service.get("layers")
+		var layers: Variant = service.get("layers")
 		if layers == null: continue
 		if service.has_signal("navigation_ready") and not service.navigation_ready.is_connected(_on_navigation_ready):
 			service.navigation_ready.connect(_on_navigation_ready)
 		var local: Vector3 = content.to_local(_meet.global_position)
-		var was_dirty: bool = layers.dirty
-		layers.add_hot_spot(SPOT_ID, Vector2(local.x, local.z), "social", 6.0, 6)
-		if not was_dirty: layers.dirty = false
+		var was_dirty: bool = bool(layers.get("dirty"))
+		layers.call("add_hot_spot", SPOT_ID, Vector2(local.x, local.z), "social", 6.0, 6)
+		if not was_dirty: layers.set("dirty", false)
 		_spotted = true
