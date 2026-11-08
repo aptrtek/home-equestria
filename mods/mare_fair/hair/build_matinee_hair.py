@@ -5,9 +5,9 @@ Needs numpy. Run it from anywhere:
 
     python mods/mare_fair/hair/build_matinee_hair.py
 
-Modelled from the official art (marefair.org/mascots and the 2025 site clips): a swept
-fringe, soft locks framing the cheeks, a high ponytail in a pink scrunchie, and a
-tapered tail that ends purple. The art has no standing side view, so the profile is
+Modelled from the official art (marefair.org/mascots and the 2025 site clips): a bob
+like her twin's, soft locks framing the cheeks, a high ponytail in a pink scrunchie, and
+a tapered light-blue tail. The art has no standing side view, so the profile is
 modelled from it, not traced. The pictures are not shipped.
 
 Rig space: +Y up, -Z toward the face, -X her right. Materials are 0 blue, 1 purple,
@@ -67,12 +67,7 @@ def tail():
     keys = [(0, 0.645, 0.165), (0, 0.68, 0.25), (0, 0.63, 0.34), (0, 0.53, 0.385), (0, 0.42, 0.375), (0, 0.32, 0.40), (0, 0.24, 0.365)]
     widths = [0.025, 0.05, 0.07, 0.07, 0.06, 0.045, 0.003]
     thicks = [0.026, 0.04, 0.05, 0.05, 0.04, 0.028, 0.003]
-    main = loft(keys, widths, thicks, tail_out, steps=10, sides=20)
-    # The purple end sits over the blue, slightly fuller so the colour change is clean.
-    tip = loft(keys[4:], [0.076, 0.06, 0.004], [0.053, 0.04, 0.004], tail_out, steps=10, sides=20)
-    # A halfway band between the two, so the blue fades into the periwinkle end.
-    mid = loft(keys[3:6], [0.08, 0.07, 0.054], [0.058, 0.048, 0.034], tail_out, steps=10, sides=20)
-    return {BLUE: [main], MID: [mid], PURPLE: [tip]}
+    return {BLUE: [loft(keys, widths, thicks, tail_out, steps=10, sides=20)]}
 
 
 def main():

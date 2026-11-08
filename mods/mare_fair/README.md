@@ -19,7 +19,7 @@ Built for game version `0.3.0-maredev`. With the mod switched off, Ponyville is 
 | --- | --- | --- | --- |
 | **Fair Flyer** | Pegasus | Two-tone blonde mane and a big wavy tail, wide sun hat with a sunflower | Organises the event |
 | **Soirée** | Earth pony | Rounded cyan bob with a level fringe, short crescent tail | Blunt and sardonic; Matinée's twin; married to aperture_tech |
-| **Matinée** | Pegasus | Light-blue bob like her twin's, high ponytail in a pink scrunchie, tail fading to periwinkle | Bubbly costume enthusiast; Soirée's twin |
+| **Matinée** | Pegasus | Light-blue bob like her twin's, high ponytail in a pink scrunchie, tapered light-blue tail | Bubbly costume enthusiast; Soirée's twin |
 | **Morning Mimosa** | Earth pony | Green mane, leafy braids tied with oranges, round spiral glasses | Eccentric |
 | **Fun Raiser** | Unicorn | Orange ponytail and curls with a pale streak, gold half-moon reading glasses | Introduces ponies who need something to each other |
 
