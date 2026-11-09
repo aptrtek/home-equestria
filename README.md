@@ -4,11 +4,11 @@ A VR (and desktop) life-sim in Ponyville. Current version: **0.3.0-maredev** ([w
 
 ### Mare Fair mod
 
-This fork adds the five [Mare Fair](https://marefair.org/mascots/) mascots to Ponyville as a free, unofficial fan mod.
+This fork adds the five [Mare Fair](https://marefair.org/mascots/) mascots to Ponyville as a free, unofficial fan mod. The mascots belong to Snowpity Inc.
 
 ![The five Mare Fair mascots in game](mods/mare_fair/docs/lineup.png)
 
-**[Download Mare Fair 1.2.0](https://github.com/aptrtek/home-equestria/releases/tag/mare-fair-v1.2.0)**, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. See the [mod's README](mods/mare_fair/README.md) for full details.
+**[Download Mare Fair 1.2.1](https://github.com/aptrtek/home-equestria/releases/tag/mare-fair-v1.2.1)**, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. See the [mod's README](mods/mare_fair/README.md) for full details.
 
 What the mod changes:
 

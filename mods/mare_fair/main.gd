@@ -16,6 +16,17 @@ const WIFE := "soiree"
 const AI_CONFIG := preload("res://world/ai/ai_config.gd")
 const SISTER := "matinee"
 const SISTER_KNOWS := "\n\nSoirée and aperture_tech are married. Matinée is thrilled about it, has opinions on the wedding outfits, and will set anypony straight who gets ideas about her sister."
+## Script extensions do not work in the packaged game, so nothing here extends a game script.
+## The mares wear the game's own hat and glasses items, which gives them the wardrobe, saving and
+## the AI's take_off and put_on, and their own models are drawn in place of those items.
+const WEAR := {
+	"fair_flyer": ["cowpony-hat", "res://mods/mare_fair/accessories/sun_hat.glb"],
+	"morning_mimosa": ["cat-eye-glasses", "res://mods/mare_fair/accessories/spiral_glasses.glb"],
+	"fun_raiser": ["cat-eye-glasses", "res://mods/mare_fair/accessories/half_moon_glasses.glb"],
+}
+const OUTLINE := "res://mods/mare_fair/accessories/outline.gdshader"
+const OWN_WEAR := "MareFairWear"
+var _poll := 0.0
 var _sister_check := 0.0
 var _dressed: Dictionary = {}
 
@@ -27,6 +38,11 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_poll -= delta
+	if _poll <= 0.0:
+		_poll = 1.0
+		_keep_out_of_houses()
+		_sync_wear()
 	_sister_check -= delta
 	if _sister_check <= 0.0:
 		_sister_check = 2.0
@@ -76,6 +92,87 @@ func _on_world(game: Node) -> void:
 	_park(game)
 	_enroll(game)
 	_start_marriage(game)
+	_give_wear(game)
+
+
+## The mares live at their balloon. The game hands every resident a house, so theirs are taken back.
+func _keep_out_of_houses() -> void:
+	var game: Node = Mods.game
+	if not is_instance_valid(game): return
+	var population: Variant = game.get("population")
+	if not is_instance_valid(population): return
+	var houses: Variant = population.get("houses")
+	if not houses is Dictionary: return
+	var removed := false
+	for id: String in IDS:
+		if (houses as Dictionary).erase(id): removed = true
+	if not removed: return
+	population.set("_houses_version", int(population.get("_houses_version")) + 1)
+	for house: Node in get_tree().get_nodes_in_group("house_interiors"):
+		if house.has_method("set_sleepers"): house.call("set_sleepers", population.call("residents_of", house.call("place_id")))
+	preload("res://world/save_file.gd").write(str(population.get("config_path")).get_base_dir().path_join("homes.json"), houses)
+
+
+## Once per world: the mares own their hat and glasses, as the game's gifts.
+func _give_wear(game: Node) -> void:
+	var state: Dictionary = Mods.state("mare_fair")
+	if bool(state.get("wear_given", false)): return
+	var wardrobe: Variant = game.get("wardrobe")
+	if not is_instance_valid(wardrobe) or game.get("world_context") == null or game.world_context._read_only: return
+	var gifts: Dictionary = wardrobe.call("gifts")
+	for id: String in WEAR:
+		var item := "wear:%s:0" % str(WEAR[id][0])
+		var list: Array = gifts.get(id, [])
+		if item not in list:
+			list.append(item)
+			gifts[id] = list
+	state["wear_given"] = true
+	Mods.save_changed()
+
+
+## Draws each mare's own model while the game has its stand-in item on her.
+func _sync_wear() -> void:
+	var game: Node = Mods.game
+	if not is_instance_valid(game): return
+	var mares: Variant = game.get("mares")
+	if not mares is Array: return
+	for pony: Variant in mares:
+		if not is_instance_valid(pony): continue
+		var who: Variant = pony.get("identity")
+		if who == null or not WEAR.has(str(who.get("id"))): continue
+		var skeleton: Variant = pony.get("hair_skeleton")
+		if not skeleton is Skeleton3D: continue
+		var row: Array = WEAR[str(who.get("id"))]
+		var stand_in: Node3D
+		for node: Node in (pony as Node).find_children("Wear_" + str(row[0]), "", true, false):
+			if not node.is_queued_for_deletion(): stand_in = node as Node3D
+		var own := (skeleton as Node).get_node_or_null(OWN_WEAR)
+		if stand_in == null:
+			if own != null: own.queue_free()
+			continue
+		stand_in.visible = false
+		if own == null: _attach_wear(skeleton, str(row[1]))
+
+
+func _attach_wear(skeleton: Skeleton3D, path: String) -> void:
+	var bone := skeleton.find_bone("mHead")
+	if bone < 0 or not ResourceLoader.exists(path): return
+	var attachment := BoneAttachment3D.new()
+	attachment.name = OWN_WEAR
+	attachment.bone_name = "mHead"
+	skeleton.add_child(attachment)
+	var piece: Node3D = load(path).instantiate()
+	attachment.add_child(piece)
+	piece.transform = skeleton.get_bone_global_rest(bone).affine_inverse()
+	var line := ShaderMaterial.new()
+	line.shader = load(OUTLINE)
+	var meshes: Array[Node] = piece.find_children("*", "MeshInstance3D", true, false)
+	if piece is MeshInstance3D: meshes.append(piece)
+	for mesh: MeshInstance3D in meshes:
+		for surface in mesh.mesh.get_surface_count():
+			var material: Material = mesh.mesh.surface_get_material(surface).duplicate()
+			material.next_pass = line
+			mesh.set_surface_override_material(surface, material)
 
 
 ## Matinée knows about the marriage only while it is true in the game, however it came about.

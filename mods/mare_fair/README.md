@@ -10,8 +10,10 @@ Built for game version `0.3.0-maredev`. With the mod switched off, Ponyville is 
 
 ## Download
 
-- **[mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair.pck)**: the mod itself. This is the only file players need.
-- **[mare_fair_source.zip](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair_source.zip)**: just the mod's source folder, for anyone who wants to change it.
+- **[mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.1/mare_fair.pck)**: the mod itself. This is the only file players need.
+- **[mare_fair_source.zip](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.1/mare_fair_source.zip)**: just the mod's source folder, for anyone who wants to change it.
+
+> **Versions 1.1.0 and 1.2.0 do not work on the packaged game.** They stop it from loading. Use 1.2.1 or newer.
 
 ## The mascots
 
@@ -28,7 +30,7 @@ and Fun Raiser's jacket and pendant.
 
 ## Install
 
-1. Download [mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair.pck).
+1. Download [mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.1/mare_fair.pck).
 2. Put it in your mods folder. **Settings → Mods → Open mods folder** opens it for you.
    On Windows that is `%APPDATA%\home-equestria-public\mods\`.
 3. Restart the game. The mod is listed under **Settings → Mods**.
@@ -99,7 +101,7 @@ Godot reimports the file.
 
 ## Credits
 
-Mare Fair and its mascots belong to the convention and its artists. This is an unofficial fan
+The Mare Fair mascots belong to Snowpity Inc. This is an unofficial fan
 mod. Colours, bios, cutie marks and hair are based on the public art on
 [marefair.org](https://marefair.org/mascots/). The cutie marks are that site's public vectors. The
 reference pictures are not included. The 3D hair and accessories are original to this mod.
