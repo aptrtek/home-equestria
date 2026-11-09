@@ -10,8 +10,8 @@ Built for game version `0.3.0-maredev`. With the mod switched off, Ponyville is 
 
 ## Download
 
-- **[mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.1.0/mare_fair.pck)**: the mod itself. This is the only file players need.
-- **[mare_fair_source.zip](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.1.0/mare_fair_source.zip)**: just the mod's source folder, for anyone who wants to change it.
+- **[mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair.pck)**: the mod itself. This is the only file players need.
+- **[mare_fair_source.zip](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair_source.zip)**: just the mod's source folder, for anyone who wants to change it.
 
 ## The mascots
 
@@ -28,7 +28,7 @@ and Fun Raiser's jacket and pendant.
 
 ## Install
 
-1. Download [mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.1.0/mare_fair.pck).
+1. Download [mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair.pck).
 2. Put it in your mods folder. **Settings → Mods → Open mods folder** opens it for you.
    On Windows that is `%APPDATA%\home-equestria-public\mods\`.
 3. Restart the game. The mod is listed under **Settings → Mods**.
