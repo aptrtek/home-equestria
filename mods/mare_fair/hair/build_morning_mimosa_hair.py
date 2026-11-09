@@ -21,7 +21,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-from build_fair_flyer_hair import linear, write  # noqa: E402
+from build_fair_flyer_hair import linear, write, write_accessory  # noqa: E402
 from build_matinee_hair import head_cap  # noqa: E402
 from build_soiree_hair import check_closed, fall_out, helmet_fringe, loft, mane_weight, merge, radial, read_glb, spline, tail_out, tail_weight  # noqa: E402
 
@@ -75,10 +75,10 @@ def mane():
     # The tie and a small leafy tuft below it.
     green.append(loft([(0.135, 0.50, -0.21), (0.137, 0.46, -0.235), (0.14, 0.43, -0.20)], [0.028, 0.034, 0.002], [0.02, 0.018, 0.002], fall_out(1.0), steps=8, sides=14))
     # The orange slice tucked by her left ear, as in the no-glasses art.
-    return {GREEN: green, ORANGE: [orange((0.145, 0.492, -0.215), 0.03), orange((0.182, 1.05, -0.205), 0.04, squash=0.22)], FRAME: glasses()}
+    return {GREEN: green, ORANGE: [orange((0.145, 0.492, -0.215), 0.03), orange((0.182, 1.05, -0.205), 0.04, squash=0.22)]}
 
 
-def glasses(spiral=True, radius=0.074, wire=0.0042):
+def glasses(spiral=True, radius=0.074, wire=0.0056):
     """Round glasses close to the face. With spiral, a fine line marks each lens."""
     parts = []
     z = -0.405
@@ -90,7 +90,7 @@ def glasses(spiral=True, radius=0.074, wire=0.0042):
         if spiral:
             turns = np.linspace(0.0, 1.0, 34)
             coil = [center + np.array((np.cos(side * t * 4.4 * np.pi), np.sin(side * t * 4.4 * np.pi), 0.0)) * (0.012 + (radius - 0.02) * t) for t in turns]
-            parts.append(loft(coil, [0.0016] * 34, [0.0016] * 34, lambda _p: (0.0, 0.0, 1.0), steps=2, sides=8))
+            parts.append(loft(coil, [0.0022] * 34, [0.0022] * 34, lambda _p: (0.0, 0.0, 1.0), steps=2, sides=8))
         arm = [(side * (0.095 + radius), 0.915, z), (side * 0.18, 0.935, -0.30), (side * 0.175, 0.96, -0.20)]
         parts.append(loft(arm, [wire, wire, 0.002], [wire, wire, 0.002], radial, steps=6, sides=8))
     gap = 0.095 - radius
@@ -125,6 +125,7 @@ def main():
         ("MorningMimosaDevkitTail", {m: merge(l, tail_weight) for m, l in tail_groups.items()}),
     ]
     write(GLB, rig, blob, meshes)
+    write_accessory(os.path.join(HERE, "..", "accessories", "spiral_glasses.glb"), {FRAME: glasses()}, {FRAME: linear(COLORS[FRAME])})
     print("bytes", os.path.getsize(GLB))
 
 

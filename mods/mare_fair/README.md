@@ -56,6 +56,13 @@ The ponies know you by the `player_name` in your `ai_config.json`, which on Wind
 `%APPDATA%\home-equestria-public\`. Soirée is married to aperture_tech. Anyone else gets the
 honest version: she will tell them she is married, and turn them down.
 
+A new world named for aperture_tech starts already married to her. To earn her hoof instead, create
+`mods\data\mare_fair\settings.json` in that same folder before starting the world:
+
+```json
+{ "start_married_to_soiree": false }
+```
+
 ## Working on the mod
 
 You need the game's source project, the `source-data` zips from the matching release, and Godot

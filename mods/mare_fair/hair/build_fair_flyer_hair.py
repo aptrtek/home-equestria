@@ -97,9 +97,60 @@ def mane():
         bead_w.append(0.009 + 0.008 * abs(np.cos(t * np.pi * 4.0)))
     bead_w = np.array(bead_w)
     blonde.append(loft(bead_keys, bead_w, bead_w * 0.85, lambda _p: (1.0, 0.0, 0.0), steps=3, sides=12))
-    groups = {BLONDE: blonde, DUSKY: dusky, BAND: band, DARK: dark}
-    groups.update(sun_hat(band))
-    return groups
+    # The headband lies on the hair over the crown; the hat is a separate piece she can take off.
+    angles = np.radians(np.linspace(-62.0, 62.0, 13))
+    arch = [(0.188 * np.sin(a), 1.0 + 0.139 * np.cos(a), -0.235) for a in angles]
+    band.append(loft(arch, [0.013] * 13, [0.006] * 13, lambda p: (p[0], p[1] - 0.995, 0.0), steps=3, sides=10))
+    return {BLONDE: blonde, DUSKY: dusky, BAND: band, DARK: dark}
+
+
+def write_accessory(path, groups, colors):
+    """A plain static model for the wardrobe: rig-space vertices, one primitive per colour."""
+    buffer, views, accessors, primitives, materials = bytearray(), [], [], [], []
+
+    def add(array, kind, component, target, bounds=False):
+        while len(buffer) % 4:
+            buffer.append(0)
+        raw = array.tobytes()
+        views.append({"buffer": 0, "byteOffset": len(buffer), "byteLength": len(raw), "target": target})
+        buffer.extend(raw)
+        item = {"bufferView": len(views) - 1, "componentType": component, "count": len(array), "type": kind}
+        if bounds:
+            item["min"] = [float(x) for x in array.min(0)]
+            item["max"] = [float(x) for x in array.max(0)]
+        accessors.append(item)
+        return len(accessors) - 1
+
+    for material, locks in groups.items():
+        check_closed(locks)
+        verts, normals, _joints, _weights, faces = merge(locks, lambda _y: [(0, 1.0)])
+        primitives.append(
+            {
+                "attributes": {"POSITION": add(verts, "VEC3", 5126, 34962, True), "NORMAL": add(normals, "VEC3", 5126, 34962)},
+                "indices": add(faces.reshape(-1), "SCALAR", 5125, 34963),
+                "material": len(materials),
+            }
+        )
+        materials.append({"name": "Accessory%d" % len(materials), "doubleSided": True, "pbrMetallicRoughness": {"baseColorFactor": colors[material], "metallicFactor": 0.0, "roughnessFactor": 0.85}})
+    gltf = {
+        "asset": {"version": "2.0", "generator": "mods/mare_fair/hair/" + os.path.basename(sys.argv[0])},
+        "scene": 0,
+        "scenes": [{"nodes": [0]}],
+        "nodes": [{"name": "Accessory", "mesh": 0}],
+        "meshes": [{"name": "Accessory", "primitives": primitives}],
+        "materials": materials,
+        "accessors": accessors,
+        "bufferViews": views,
+        "buffers": [{"byteLength": len(buffer)}],
+    }
+    text = json.dumps(gltf, separators=(",", ":")).encode()
+    text += b" " * (-len(text) % 4)
+    buffer.extend(b"\0" * (-len(buffer) % 4))
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "wb") as f:
+        f.write(struct.pack("<III", 0x46546C67, 2, 28 + len(text) + len(buffer)))
+        f.write(struct.pack("<II", len(text), 0x4E4F534A) + text)
+        f.write(struct.pack("<II", len(buffer), 0x004E4942) + bytes(buffer))
 
 
 def lathe(origin, axis, profile, sides=40):
@@ -217,6 +268,12 @@ def main():
         ("FairFlyerDevkitTail", {m: merge(l, tail_weight) for m, l in tail_groups.items()}),
     ]
     write(GLB, rig, blob, meshes)
+    ribbon = []
+    hat = sun_hat(ribbon)
+    hat[BAND] = ribbon
+    colors = {m: linear(c) for m, c in COLORS.items()}
+    colors[BAND] = rig["materials"][BAND]["pbrMetallicRoughness"]["baseColorFactor"]
+    write_accessory(os.path.join(HERE, "..", "accessories", "sun_hat.glb"), hat, colors)
     for name, groups in meshes:
         for material, (verts, _n, _j, _w, faces) in groups.items():
             print(name, "material", material, "verts", len(verts), "tris", len(faces), verts.min(0).round(3), verts.max(0).round(3))
