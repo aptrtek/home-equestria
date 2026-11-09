@@ -1,5 +1,8 @@
 # Mare Fair
 
+> **This mod has moved to [aptrtek/home-equestria-mare-fair](https://github.com/aptrtek/home-equestria-mare-fair).** New versions are released
+> there, starting with 1.4.0. This copy stays at 1.2.1 and is no longer updated.
+
 A mod for [Home: Equestria](https://github.com/homedevanon/home-equestria) that brings the five
 [Mare Fair](https://marefair.org/mascots/) mascots to Ponyville. They gather at their own parked
 balloon on Balloon Hill, keep daily schedules, and talk through the game's AI ponies.

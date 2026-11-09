@@ -4,13 +4,15 @@ A VR (and desktop) life-sim in Ponyville. Current version: **0.3.0-maredev** ([w
 
 ### Mare Fair mod
 
-This fork adds the five [Mare Fair](https://marefair.org/mascots/) mascots to Ponyville as a free, unofficial fan mod. The mascots belong to Snowpity Inc.
+> **The Mare Fair mod has moved to [aptrtek/home-equestria-mare-fair](https://github.com/aptrtek/home-equestria-mare-fair).** New versions are released there; this fork gets no more Mare Fair releases.
+
+This fork added the five [Mare Fair](https://marefair.org/mascots/) mascots to Ponyville as a free, unofficial fan mod. The mascots belong to Snowpity Inc.
 
 ![The five Mare Fair mascots in game](mods/mare_fair/docs/lineup.png)
 
-**[Download Mare Fair 1.2.1](https://github.com/aptrtek/home-equestria/releases/tag/mare-fair-v1.2.1)**, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. See the [mod's README](mods/mare_fair/README.md) for full details.
+**[Download the latest Mare Fair](https://github.com/aptrtek/home-equestria-mare-fair/releases/latest)** from the new repository, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. Its [README](https://github.com/aptrtek/home-equestria-mare-fair#readme) has the full details.
 
-What the mod changes:
+What the mod changed, as of 1.2.1, the last release here:
 
 - Adds Fair Flyer, Soirée, Matinée, Morning Mimosa and Fun Raiser as Ponyville residents, with their own bios, schedules, cutie marks and AI personalities.
 - Gives each mare solid hair modelled from the official art. Fair Flyer has her sun hat, Morning Mimosa her spiral glasses and Fun Raiser her half-moon reading glasses.
