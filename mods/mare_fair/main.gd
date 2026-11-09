@@ -21,7 +21,7 @@ const SISTER_KNOWS := "\n\nSoirée and aperture_tech are married. Matinée is th
 ## the AI's take_off and put_on, and their own models are drawn in place of those items.
 const WEAR := {
 	"fair_flyer": ["cowpony-hat", "res://mods/mare_fair/accessories/sun_hat.glb"],
-	"morning_mimosa": ["cat-eye-glasses", "res://mods/mare_fair/accessories/spiral_glasses.glb"],
+	"morning_mimosa": ["aviators", "res://mods/mare_fair/accessories/spiral_glasses.glb"],
 	"fun_raiser": ["cat-eye-glasses", "res://mods/mare_fair/accessories/half_moon_glasses.glb"],
 }
 const OUTLINE := "res://mods/mare_fair/accessories/outline.gdshader"
@@ -32,6 +32,7 @@ var _dressed: Dictionary = {}
 
 
 func _ready() -> void:
+	add_child(preload("res://mods/mare_fair/hand_wear.gd").new())
 	Mods.on_node(PONY, _dress)
 	Mods.world_ready.connect(_on_world)
 	if is_instance_valid(Mods.game): _on_world(Mods.game)
@@ -116,6 +117,7 @@ func _keep_out_of_houses() -> void:
 ## Once per world: the mares own their hat and glasses, as the game's gifts.
 func _give_wear(game: Node) -> void:
 	var state: Dictionary = Mods.state("mare_fair")
+	_separate_glasses(game, state)
 	if bool(state.get("wear_given", false)): return
 	var wardrobe: Variant = game.get("wardrobe")
 	if not is_instance_valid(wardrobe) or game.get("world_context") == null or game.world_context._read_only: return
@@ -128,6 +130,26 @@ func _give_wear(game: Node) -> void:
 			gifts[id] = list
 	state["wear_given"] = true
 	Mods.save_changed()
+
+
+## Morning Mimosa's stand-in changed, so each mare's piece can be told apart when it is carried.
+func _separate_glasses(game: Node, state: Dictionary) -> void:
+	if bool(state.get("glasses_separated", false)): return
+	var wardrobe: Variant = game.get("wardrobe")
+	if not is_instance_valid(wardrobe) or game.get("world_context") == null or game.world_context._read_only: return
+	var gifts: Dictionary = wardrobe.call("gifts")
+	var list: Array = gifts.get("morning_mimosa", [])
+	if "wear:cat-eye-glasses:0" in list:
+		list.erase("wear:cat-eye-glasses:0")
+		list.append("wear:aviators:0")
+		gifts["morning_mimosa"] = list
+	var off: Dictionary = wardrobe.call("taken_off")
+	var taken: Array = off.get("morning_mimosa", [])
+	if "cat-eye-glasses" in taken:
+		taken.erase("cat-eye-glasses")
+		taken.append("aviators")
+		off["morning_mimosa"] = taken
+	state["glasses_separated"] = true
 
 
 ## Draws each mare's own model while the game has its stand-in item on her.
@@ -170,6 +192,8 @@ func _attach_wear(skeleton: Skeleton3D, path: String) -> void:
 	if piece is MeshInstance3D: meshes.append(piece)
 	for mesh: MeshInstance3D in meshes:
 		for surface in mesh.mesh.get_surface_count():
+			# Only the frame of the spiral glasses is outlined; the lens and spiral stay clean.
+			if surface > 0 and path.ends_with("spiral_glasses.glb"): continue
 			var material: Material = mesh.mesh.surface_get_material(surface).duplicate()
 			material.next_pass = line
 			mesh.set_surface_override_material(surface, material)

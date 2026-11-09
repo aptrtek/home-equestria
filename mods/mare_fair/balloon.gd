@@ -15,8 +15,8 @@ const ENVELOPE_SURFACES: Array[int] = [2, 3]
 const BASKET_SURFACES: Array[int] = [1, 6, 7, 8, 10]
 const STAR_SURFACES: Array[int] = [0, 5]
 const SPOT_ID := "mare_fair_balloon"
-## Clear of Twilight's balloon (280.5, -296), the easel (266, -285.5) and the picnic tables.
-const POSE := Vector3(262.0, 6.78, -308.0)
+## On open ground west of the hill's crossroads, clear of its paths and Twilight's balloon (280.5, -296).
+const POSE := Vector3(232.0, 6.78, -307.0)
 ## Door faces back toward Twilight's balloon and the hill path.
 const YAW := -2.15
 var _body: StaticBody3D
@@ -49,11 +49,12 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	# The terrain can stream in long after the balloon, so keep looking until it has landed.
 	_tries += 1
+	if _tries % 15 != 0: return
 	if not _grounded: _snap_to_ground()
 	_register_spot()
-	if _spotted and (_grounded or _tries > 240): set_process(false)
-	elif _tries > 480: set_process(false)
+	if _spotted and _grounded: set_process(false)
 
 
 ## The game's own town balloon model, repainted: striped envelope, red basket.

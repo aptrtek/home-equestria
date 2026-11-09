@@ -27,6 +27,12 @@ from build_soiree_hair import check_closed, fall_out, helmet_fringe, loft, mane_
 
 GLB = os.path.join(HERE, "morning_mimosa.glb")
 GREEN, ORANGE, FRAME = 0, 1, 2
+# Only in the glasses file, so it is not one of the hair's materials.
+LENS, SPIRAL = 3, 4
+# How far down her nose the glasses sit.
+NOSE_DROP = 0.0
+# Far enough forward to clear her eyes.
+GLASSES_Z = -0.397
 COLORS = {GREEN: "2FBE58", ORANGE: "F09A28", FRAME: "3A3A46"}
 
 
@@ -78,10 +84,25 @@ def mane():
     return {GREEN: green, ORANGE: [orange((0.145, 0.492, -0.215), 0.03), orange((0.182, 1.05, -0.205), 0.04, squash=0.22)]}
 
 
+def lowered(parts):
+    return [(v + np.array((0.0, -NOSE_DROP, 0.0)), f) for v, f in parts]
+
+
+def lenses(radius=0.074):
+    """Solid white lenses seated in the frame rings, with the spirals in front of them."""
+    parts = []
+    heights = np.linspace(-0.995, 0.995, 21)
+    rim = np.sqrt(1.0 - heights * heights)
+    for side in (-1.0, 1.0):
+        keys = [(side * 0.095, 0.905 + radius * h, GLASSES_Z) for h in heights]
+        parts.append(loft(keys, radius * rim, 0.0012 * rim, lambda _p: (0.0, 0.0, 1.0), steps=2, sides=28))
+    return parts
+
+
 def glasses(spiral=True, radius=0.074, wire=0.0056):
     """Round glasses close to the face. With spiral, a fine line marks each lens."""
     parts = []
-    z = -0.405
+    z = GLASSES_Z
     for side in (-1.0, 1.0):
         center = np.array((side * 0.095, 0.905, z))
         out = lambda p, c=center: p - c  # noqa: E731
@@ -89,8 +110,8 @@ def glasses(spiral=True, radius=0.074, wire=0.0056):
         parts.append(loft(ring, [wire] * 27, [wire] * 27, out, steps=2, sides=10))
         if spiral:
             turns = np.linspace(0.0, 1.0, 34)
-            coil = [center + np.array((np.cos(side * t * 4.4 * np.pi), np.sin(side * t * 4.4 * np.pi), 0.0)) * (0.012 + (radius - 0.02) * t) for t in turns]
-            parts.append(loft(coil, [0.0022] * 34, [0.0022] * 34, lambda _p: (0.0, 0.0, 1.0), steps=2, sides=8))
+            coil = [center + np.array((np.cos(side * t * 4.4 * np.pi), np.sin(side * t * 4.4 * np.pi), 0.0)) * (0.01 + (radius - 0.024) * t) + np.array((0.0, 0.0, -0.0045)) for t in turns]
+            parts.append(loft(coil, [0.0027] * 34, [0.0027] * 34, lambda _p: (0.0, 0.0, 1.0), steps=2, sides=8))
         arm = [(side * (0.095 + radius), 0.915, z), (side * 0.18, 0.935, -0.30), (side * 0.175, 0.96, -0.20)]
         parts.append(loft(arm, [wire, wire, 0.002], [wire, wire, 0.002], radial, steps=6, sides=8))
     gap = 0.095 - radius
@@ -125,7 +146,8 @@ def main():
         ("MorningMimosaDevkitTail", {m: merge(l, tail_weight) for m, l in tail_groups.items()}),
     ]
     write(GLB, rig, blob, meshes)
-    write_accessory(os.path.join(HERE, "..", "accessories", "spiral_glasses.glb"), {FRAME: glasses()}, {FRAME: linear(COLORS[FRAME])})
+    parts = glasses()
+    write_accessory(os.path.join(HERE, "..", "accessories", "spiral_glasses.glb"), {FRAME: lowered([q for i, q in enumerate(parts) if i not in (1, 4)]), LENS: lowered(lenses()), SPIRAL: lowered([parts[1], parts[4]])}, {FRAME: linear(COLORS[FRAME]), LENS: linear("F6F6F2"), SPIRAL: linear(COLORS[FRAME])})
     print("bytes", os.path.getsize(GLB))
 
 
