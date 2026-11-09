@@ -8,7 +8,7 @@ This fork adds the five [Mare Fair](https://marefair.org/mascots/) mascots to Po
 
 ![The five Mare Fair mascots in game](mods/mare_fair/docs/lineup.png)
 
-**[Download Mare Fair 1.1.0](https://github.com/aptrtek/home-equestria/releases/tag/mare-fair-v1.1.0)**, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. See the [mod's README](mods/mare_fair/README.md) for full details.
+**[Download Mare Fair 1.2.0](https://github.com/aptrtek/home-equestria/releases/tag/mare-fair-v1.2.0)**, then put `mare_fair.pck` in your mods folder (**Settings → Mods → Open mods folder**) and restart the game. See the [mod's README](mods/mare_fair/README.md) for full details.
 
 What the mod changes:
 

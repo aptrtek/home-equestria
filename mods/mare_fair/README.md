@@ -10,8 +10,8 @@ Built for game version `0.3.0-maredev`. With the mod switched off, Ponyville is 
 
 ## Download
 
-- **[mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.1.0/mare_fair.pck)**: the mod itself. This is the only file players need.
-- **[mare_fair_source.zip](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.1.0/mare_fair_source.zip)**: just the mod's source folder, for anyone who wants to change it.
+- **[mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair.pck)**: the mod itself. This is the only file players need.
+- **[mare_fair_source.zip](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair_source.zip)**: just the mod's source folder, for anyone who wants to change it.
 
 ## The mascots
 
@@ -28,7 +28,7 @@ and Fun Raiser's jacket and pendant.
 
 ## Install
 
-1. Download [mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.1.0/mare_fair.pck).
+1. Download [mare_fair.pck](https://github.com/aptrtek/home-equestria/releases/download/mare-fair-v1.2.0/mare_fair.pck).
 2. Put it in your mods folder. **Settings → Mods → Open mods folder** opens it for you.
    On Windows that is `%APPDATA%\home-equestria-public\mods\`.
 3. Restart the game. The mod is listed under **Settings → Mods**.
@@ -55,6 +55,17 @@ a free local model through [Ollama](https://ollama.com) (`http://127.0.0.1:11434
 The ponies know you by the `player_name` in your `ai_config.json`, which on Windows is in
 `%APPDATA%\home-equestria-public\`. Soirée is married to aperture_tech. Anyone else gets the
 honest version: she will tell them she is married, and turn them down.
+
+A new world named for aperture_tech starts already married to her. To earn her hoof instead, create
+`mods\data\mare_fair\settings.json` in that same folder before starting the world:
+
+```json
+{ "start_married_to_soiree": false }
+```
+
+## Hats and glasses
+
+Fair Flyer's sun hat and Morning Mimosa's and Fun Raiser's glasses are worn by default. Ask them to take one off or put it back on and they can decide to, and the world remembers.
 
 ## Working on the mod
 
@@ -83,7 +94,7 @@ bones.
 python mods/mare_fair/hair/build_soiree_hair.py
 ```
 
-Hats and glasses are modelled into the same file as the hair. Reopen the project afterwards so
+The same scripts write the removable hat and glasses to `accessories/`. Reopen the project afterwards so
 Godot reimports the file.
 
 ## Credits

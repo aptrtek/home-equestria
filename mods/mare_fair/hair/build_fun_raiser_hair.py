@@ -22,7 +22,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-from build_fair_flyer_hair import linear, write  # noqa: E402
+from build_fair_flyer_hair import linear, write, write_accessory  # noqa: E402
 from build_matinee_hair import head_cap  # noqa: E402
 from build_soiree_hair import check_closed, fall_out, helmet_fringe, loft, mane_weight, merge, radial, read_glb, tail_out, tail_weight  # noqa: E402
 
@@ -63,10 +63,10 @@ def mane():
     pale.append(streak)
     keys = [(0.10, 1.05, -0.19), (0.16, 0.985, -0.18), (0.162, 0.90, -0.19), (0.148, 0.83, -0.235), (0.12, 0.80, -0.27)]
     orange.append(loft(keys, [0.04, 0.068, 0.07, 0.05, 0.003], [0.016, 0.028, 0.028, 0.02, 0.003], fall_out(1.0), steps=10))
-    return {ORANGE: orange, PALE: pale, GREEN: green, GOLD: half_moons()}
+    return {ORANGE: orange, PALE: pale, GREEN: green}
 
 
-def half_moons(radius=0.05, wire=0.0034):
+def half_moons(radius=0.05, wire=0.0048):
     """Armless half-moon reading glasses, balanced on her snout below the eyes."""
     parts = []
     y, spread = 0.89, 0.075
@@ -118,6 +118,7 @@ def main():
         ("FunRaiserDevkitTail", {m: merge(l, tail_weight) for m, l in tail_groups.items()}),
     ]
     write(GLB, rig, blob, meshes)
+    write_accessory(os.path.join(HERE, "..", "accessories", "half_moon_glasses.glb"), {GOLD: half_moons()}, {GOLD: linear(COLORS[GOLD])})
     print("bytes", os.path.getsize(GLB))
 
 
