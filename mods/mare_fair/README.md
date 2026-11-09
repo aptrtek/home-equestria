@@ -63,6 +63,10 @@ A new world named for aperture_tech starts already married to her. To earn her h
 { "start_married_to_soiree": false }
 ```
 
+## Hats and glasses
+
+Fair Flyer's sun hat and Morning Mimosa's and Fun Raiser's glasses are worn by default. Ask them to take one off or put it back on and they can decide to, and the world remembers.
+
 ## Working on the mod
 
 You need the game's source project, the `source-data` zips from the matching release, and Godot
@@ -90,7 +94,7 @@ bones.
 python mods/mare_fair/hair/build_soiree_hair.py
 ```
 
-Hats and glasses are modelled into the same file as the hair. Reopen the project afterwards so
+The same scripts write the removable hat and glasses to `accessories/`. Reopen the project afterwards so
 Godot reimports the file.
 
 ## Credits
