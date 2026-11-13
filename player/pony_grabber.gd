@@ -16,6 +16,9 @@ const SIDES := ["left", "right"]
 ## Either hand takes whichever chest grip is nearest, front or behind
 ## (dev, headset round 5: "grab her left with my right and be normal about it").
 const GRIP_NAMES := ["left_chest", "right_chest"]
+## Metres, per unit of body scale, that a chest grip can lie from its pony's origin at most (about
+## 0.7 on a mare, more on a princess); only used to skip ponies that cannot be the nearest.
+const GRIP_SPAN := 2.0
 const SQUEES := [preload("res://world/audio/pony/squee_1.ogg"), preload("res://world/audio/pony/squee_2.ogg")]
 
 ## A hand this close to a grip point can take it.
@@ -119,22 +122,24 @@ func _physics_process(_delta: float) -> void:
 	if started > 0: CPU_PROFILE.record("grabber", started)
 
 func _physics_step(_delta: float) -> void:
+	if _hands.is_empty(): return
+	# Desktop: no physics hands. With nothing held and nothing settling, the rest of the tick
+	# only re-clears the (already clear) hand overrides. Checked before the validity scan of every
+	# pony below (45 ponies each tick, 2026-11-08): nothing in an idle desktop tick reads them, and
+	# game_residents.gd already drops a despawned pony from `ponies` and `pony`.
+	if not is_instance_valid(_hands.get("left")) and not is_instance_valid(_hands.get("right")) \
+			and not (_holding.left or _holding.right) and hoof_grabber.held.is_empty() and _sag == 0.0:
+		return
 	for p in ponies:
 		if p == null or not is_instance_valid(p):
 			ponies = ponies.filter(func(q): return q != null and is_instance_valid(q))
 			break
-	if _hands.is_empty(): return
 	if ponies.is_empty():
 		for side: String in SIDES:
 			if _holding[side]: _release(side)
 		return
 	if pony == null or not is_instance_valid(pony):
 		pony = ponies[0]
-	# Desktop: no physics hands. With nothing held and nothing settling, the rest of the tick
-	# only re-clears the (already clear) hand overrides.
-	if not is_instance_valid(_hands.get("left")) and not is_instance_valid(_hands.get("right")) \
-			and not (_holding.left or _holding.right) and hoof_grabber.held.is_empty() and _sag == 0.0:
-		return
 	if not (_holding.left or _holding.right):
 		_retarget()
 	hoof_grabber.process(_delta)
@@ -226,8 +231,29 @@ func _retarget(only_side: String = "") -> void:
 		sides.append(side); hand_at.append(hand.global_position); pressed.append(_grip_pressed(side))
 	if sides.is_empty():
 		return
+	# Grips are read only for ponies that could still hold the nearest one. A chest grip lies within
+	# GRIP_SPAN metres (per unit of body scale) of her origin, so her score is within that span of
+	# the same score taken at her origin. A pony whose lowest possible score is above another
+	# pony's highest possible score cannot win. Same winner as reading every pony's grips, which
+	# cost two bone transforms per pony per call, up to three calls a tick in VR (2026-11-12).
+	var lows: Array[float] = []
+	var cutoff := INF
 	for candidate in ponies:
-		if not candidate.has_method("get_grip_transform"):
+		var low := -INF
+		if candidate is Node3D and candidate.has_method("get_grip_transform"):
+			var at: Vector3 = candidate.global_position
+			var size: Variant = candidate.get("body_scale")
+			var span: float = GRIP_SPAN * maxf(1.0, float(size) if size != null else 1.0)
+			var score := INF
+			for s in sides.size():
+				score = minf(score, hand_at[s].distance_to(at) - (100.0 if pressed[s] else 0.0))
+			low = score - span
+			cutoff = minf(cutoff, score + span)
+		lows.append(low)
+	var index := -1
+	for candidate in ponies:
+		index += 1
+		if lows[index] > cutoff or not candidate.has_method("get_grip_transform"):
 			continue
 		var grips: Array[Vector3] = []
 		for name: String in GRIP_NAMES:

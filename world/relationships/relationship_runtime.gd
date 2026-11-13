@@ -3,7 +3,7 @@ extends Node
 const INTENT := preload("res://world/relationships/relationship_intent.gd")
 const HOUSE := preload("res://world/buildings/house_interior.gd")
 const LADDER := preload("res://world/relationships/bond_ladder.gd")
-const ACTION_HELP := "Relationship actions: relationship_offer(kind,activity,location_id) proposes an eligible offer to Anon; activity is walk/fishing/orchard/meal/visit, or place for time together at a mapped place (then give its location_id, e.g. a lake; omit location_id otherwise). For a named destination use go_to and the mapped location; each agreeing companion travels there independently and stops on arrival. Follow Anon only for a walk without a named destination; it ends when he stays beyond walking range. If he takes his balloon during a shared activity, you can board it with him. relationship_answer(offer_id,accept) answers ONLY an existing player offer. Use a boolean accept. agreed(kind) records a step you both said yes to: Anon asked for it in his own words and you accept, or he said yes to your offer. State your actual offer or answer in speech. These changes commit only when your spoken line finishes. Never answer your own offer or fabricate player acceptance. request_space() withdraws physical permission for three minutes; say that you want space. buck_player() kicks Anon back with your hind legs when your spoken line ends; only for real, lasting anger at unwelcome contact, never for boops or petting you secretly enjoy. cuddle() walks over and rests with Anon on the bed, couch, supported grass or deployed blanket he is lying on, only if you want to. Actual friendship chooses beside or shoulder company; an established romantic relationship permits a closer snuggle, subject to current boundaries. kiss_player() walks up and initiates a kiss; your relationship line says whether that is natural yet. Adults only. A short spoken line is optional; Anon can end it with the kiss button."
+const ACTION_HELP := "Relationship actions: relationship_offer(kind,activity,location_id) proposes an eligible offer to Anon; activity is walk/meal/visit/orchard/fishing, or place for time together at a mapped place (then give its location_id, e.g. a park; omit location_id otherwise). For a named destination use go_to and the mapped location; each agreeing companion travels there independently and stops on arrival. Follow Anon only for a walk without a named destination; it ends when he stays beyond walking range. If he takes his balloon during a shared activity, you can board it with him. relationship_answer(offer_id,accept) answers ONLY an existing player offer. Use a boolean accept. agreed(kind) records a step you both said yes to: Anon asked for it in his own words and you accept, or he said yes to your offer. State your actual offer or answer in speech. These changes commit only when your spoken line finishes. Never answer your own offer or fabricate player acceptance. request_space() withdraws physical permission for three minutes; say that you want space. buck_player() kicks Anon back with your hind legs when your spoken line ends; only for real, lasting anger at unwelcome contact, never for boops or petting you secretly enjoy. cuddle() walks over and rests with Anon on the bed, couch, supported grass or deployed blanket he is lying on, only if you want to. Actual friendship chooses beside or shoulder company; an established romantic relationship permits a closer snuggle, subject to current boundaries. kiss_player() walks up and initiates a kiss; your relationship line says whether that is natural yet. Adults only. A short spoken line is optional; Anon can end it with the kiss button."
 ## Added to the relationship prompt only while the player is a young AnonPony (world/life/player_form.gd), so a
 ## human's prompt is unchanged.
 const YOUNG_HELP := " Anon is a foal (a filly or colt), so there is no romance with Anon: no dates, dating, courtship, moving in, engagement, marriage, kisses or flank smacks, and never [kiss_player]."
@@ -25,6 +25,8 @@ var _offer_after := 60.0
 var _house_signature: Dictionary = {}
 var _kiss_requests: Dictionary = {}
 var _after_kiss_intents: Dictionary = {}
+## The activity of each pony's last generated outing offer (roll_outing).
+var _last_outing: Dictionary = {}
 
 func setup(host: Node) -> void:
 	game = host; bonds = host.world_context.player_bonds
@@ -312,11 +314,27 @@ func _process(delta: float) -> void:
 				_request_generated(id, {"kind": "relationship_offer", "offer_kind": "dating", "activity": "walk"}, func() -> bool: return _offer_valid(id, "dating"))
 			elif row.familiarity >= 20 and randf() < .12:
 				_offer_after = 180.0
-				var activity: String = ["walk", "fishing", "meal", "visit"].pick_random()
+				var activity := roll_outing(str(_last_outing.get(id, "")))
+				_last_outing[id] = activity
 				var kind: String = "date" if not young and bonds.eligible(id, "date") and randf() < .4 else "outing"
 				_request_generated(id, {"kind": "relationship_offer", "offer_kind": kind, "activity": activity}, func() -> bool: return _offer_valid(id, kind))
 
 	if _offer_after<=0.0: _offer_after=30.0
+
+## Generated outing offers (thread 43684951: ponies over-suggested fishing, a quarter of all rolls).
+## Weighted toward variety: fishing 1 in 8 before the no-repeat rule (about 1 in 9 after it) and never
+## twice in a row for one pony; `last` is that pony's previous roll.
+const OUTING_WEIGHTS := {"walk": 3, "meal": 2, "visit": 2, "fishing": 1}
+static func roll_outing(last: String) -> String:
+	var total := 0
+	for activity: String in OUTING_WEIGHTS:
+		if not (activity == "fishing" and last == "fishing"): total += int(OUTING_WEIGHTS[activity])
+	var roll := randi() % total
+	for activity: String in OUTING_WEIGHTS:
+		if activity == "fishing" and last == "fishing": continue
+		roll -= int(OUTING_WEIGHTS[activity])
+		if roll < 0: return activity
+	return "walk"
 
 ## Eligibility is checked both when exposing the action and again on arrival.
 func can_kiss_player(id: String) -> bool:
@@ -514,16 +532,26 @@ func _apply_household(id: String) -> void:
 	var previous:Dictionary=_house_signature.get(id,{})
 	var old_house:Node3D=previous.house.get_ref() if previous.get("house")!=null else null
 	if is_instance_valid(old_house) and previous.id!=home_id:
-		old_house.remove_meta("shared_player_home")
-		old_house.remove_meta("player_partner")
-		old_house.set_sleepers(game.population.residents_of(previous.id))
-		var old_bed:=old_house.get_node_or_null("PlayerRest")
-		if old_bed!=null:old_bed.queue_free()
+		# Only the partner who holds the house clears it; a second partner leaving changes nothing.
+		if str(old_house.get_meta("player_partner",""))==id:
+			old_house.remove_meta("shared_player_home")
+			old_house.remove_meta("player_partner")
+			old_house.set_sleepers(game.population.residents_of(previous.id))
+			var old_bed:=old_house.get_node_or_null("PlayerRest")
+			if old_bed!=null:old_bed.queue_free()
 		_house_signature.erase(id)
 	if home_id.is_empty():return
 	for house:Node3D in get_tree().get_nodes_in_group("house_interiors"):
 		if house.place_id()!=home_id:continue
-		if previous.get("instance",0)==house.get_instance_id() and house.get_meta("player_partner","")==id:return
+		var holder:=str(house.get_meta("player_partner",""))
+		if previous.get("instance",0)==house.get_instance_id() and holder==id:return
+		# Two partners can share one house (Vinyl and Octavia, or a Mirror Pool copy of the mare he
+		# lives with). The first keeps the shared bed for as long as she lives here: each used to
+		# take the house back from the other every second, adding one more shared bed node each
+		# time (the Mirror Pool author's report, 2026-11-12).
+		if holder!="" and holder!=id and actors.has(holder) and is_instance_valid(actors[holder]) and str(bonds.record_for(holder).shared_home_id)==home_id:
+			_house_signature[id]={"id":home_id,"house":weakref(house),"instance":house.get_instance_id()}
+			return
 		var residents:Array=game.population.residents_of(home_id)
 		if "player" not in residents:residents.append("player")
 		house.set_meta("shared_player_home",true)
